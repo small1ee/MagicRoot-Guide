@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 框架功能恢复：一键自动修复。一个按钮执行整条恢复脚本，输出实时显示在下方。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ScrollView
+        android:id="@+id/recoveryScroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/recovery_title" />
+
+                <TextView
+                    style="@style/SectionHint"
+                    android:text="@string/recovery_subtitle" />
+            </LinearLayout>
+
+            <!-- root 状态提示：无 root 时明确告知，避免点了一键修复却毫无反应 -->
+            <LinearLayout style="@style/Callout.Info" android:layout_marginTop="8dp">
+                <TextView
+                    style="@style/CalloutLabel"
+                    android:text="Root 状态"
+                    android:textColor="@color/callout_info" />
+
+                <TextView
+                    android:id="@+id/tvRootStatus"
+                    style="@style/CalloutBody"
+                    android:text="@string/recovery_root_checking"
+                    android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
+            <!-- 框架选择：选中谁就修复谁 -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/recovery_framework_title" />
+
+                <TextView
+                    style="@style/SectionHint"
+                    android:text="@string/recovery_framework_hint" />
+
+                <RadioGroup
+                    android:id="@+id/rgFramework"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rbLsposed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/recovery_framework_lsposed" />
+
+                    <RadioButton
+                        android:id="@+id/rbVector"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recovery_framework_vector" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <!-- 风险提示 -->
+            <LinearLayout style="@style/Callout.Danger" android:layout_marginTop="8dp">
+                <TextView
+                    style="@style/CalloutLabel"
+                    android:text="@string/callout_warning"
+                    android:textColor="@color/callout_danger" />
+
+                <TextView
+                    android:id="@+id/tvWarning"
+                    style="@style/CalloutBody" />
+            </LinearLayout>
+
+            <!-- 一键修复按钮 -->
+            <Button
+                android:id="@+id/btnFix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/recovery_fix_button"
+                android:textAllCaps="false" />
+
+            <!-- 进度行：执行中显示转动圈 + 当前阶段，点击后立刻可见 -->
+            <LinearLayout
+                android:id="@+id/progressRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true" />
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/recovery_progress_running"
+                    android:textColor="@color/accent"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- 输出区 -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/recovery_output_title" />
+
+                <TextView
+                    android:id="@+id/tvOutput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:fontFamily="monospace"
+                    android:minHeight="120dp"
+                    android:padding="12dp"
+                    android:text="@string/recovery_output_idle"
+                    android:textColor="@color/text_secondary"
+                    android:textIsSelectable="true"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

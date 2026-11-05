@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 步骤小标题：一个区块只有它一处加粗放大（序号由徽章显示，间距由板块容器控制） -->
+    <style name="SectionTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 板块序号徽章：标题前的步骤数字 -->
+    <style name="SectionBadge">
+        <item name="android:layout_width">26dp</item>
+        <item name="android:layout_height">26dp</item>
+        <item name="android:background">@drawable/bg_badge</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/bg</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 板块容器：一个步骤的所有内容包在带边框的卡片块里（必须是 vertical，LinearLayout 默认是 horizontal） -->
+    <style name="SectionBlock">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:background">@drawable/bg_section</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <!-- 合并区块内的子项小标题：无序号，比 SectionTitle 轻一档，避免大标题堆叠 -->
+    <style name="SectionSubTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">14dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 区块下的一句话说明：只说会发生什么 + 要不要你操作 -->
+    <style name="SectionHint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <!-- 通用正文卡片（用在 SectionBlock 容器内，用深一档底色形成层次） -->
+    <style name="Card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:background">@drawable/bg_card_alt</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- 文字型链接 -->
+    <style name="LinkText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- 状态检测分组大标题：把「是否需 root」分成两块 -->
+    <style name="GroupTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">22dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:paddingStart">2dp</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 分组分隔线 -->
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <!-- ============ 提示说明规范：统一 Callout 组件 ============ -->
+    <!-- 容器：四档共用结构（圆角底 + 左侧色条由 drawable 提供） -->
+    <style name="Callout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <!-- 档位标签：统一的「提示 / 注意 / 警告 / 成功」小标题 -->
+    <style name="CalloutLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
+    <!-- 正文：统一的说明文字 -->
+    <style name="CalloutBody">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+    </style>
+
+    <!-- 四档：仅替换底色 drawable，色条随底色走 -->
+    <style name="Callout.Info" parent="Callout">
+        <item name="android:background">@drawable/bg_callout_info</item>
+    </style>
+    <style name="Callout.Warn" parent="Callout">
+        <item name="android:background">@drawable/bg_callout_warn</item>
+    </style>
+    <style name="Callout.Danger" parent="Callout">
+        <item name="android:background">@drawable/bg_callout_danger</item>
+    </style>
+    <style name="Callout.Success" parent="Callout">
+        <item name="android:background">@drawable/bg_callout_success</item>
+    </style>
+
+    <!-- ============ 按钮规范：主/次分明，触摸目标 ≥48dp ============ -->
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.App.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 首页：三 Tab。顶部标题 + 三条铁律固定，下面用自定义 Tab 切换三块内容（同一时刻只显示一块）。
+     每个板块仍是带边框的 SectionBlock，标题前有步骤序号徽章，视觉分区明确。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- 标题行：标题 + 查看（指向网页版使用者指南） -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvGuideLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:paddingStart="10dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="8dp"
+            android:text="@string/view_link"
+            android:textColor="@color/accent"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvChangelog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:background="?attr/selectableItemBackground"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/optional"
+        android:textSize="11sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/subtitle"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <!-- ============ 三条互斥铁律（最上面，进门先看） ============ -->
+    <LinearLayout style="@style/Callout.Danger" android:layout_marginTop="16dp">
+
+        <TextView
+            style="@style/CalloutLabel"
+            android:text="@string/rules_title"
+            android:textColor="@color/callout_danger" />
+
+        <TextView
+            style="@style/CalloutBody"
+            android:text="@string/rule_1" />
+
+        <TextView
+            style="@style/CalloutBody"
+            android:layout_marginTop="6dp"
+            android:text="@string/rule_2" />
+
+        <TextView
+            style="@style/CalloutBody"
+            android:layout_marginTop="6dp"
+            android:text="@string/rule_3" />
+    </LinearLayout>
+
+    <!-- ============ 顶部 Tab 切换 ============ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/tabPre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp">
+
+            <TextView
+                android:id="@+id/tabPreLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_pre"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/tabPreIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_tab_indicator_active" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabDetect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp">
+
+            <TextView
+                android:id="@+id/tabDetectLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_detect"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/tabDetectIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_tab_indicator_inactive" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tabPost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp">
+
+            <TextView
+                android:id="@+id/tabPostLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_post"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/tabPostIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_tab_indicator_inactive" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ============ Tab 1：root 前必看 ============ -->
+    <ScrollView
+        android:id="@+id/tabPreContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/tab_pre" />
+
+                <LinearLayout style="@style/Callout.Info">
+                    <TextView
+                        style="@style/CalloutLabel"
+                        android:text="@string/callout_tip"
+                        android:textColor="@color/callout_info" />
+
+                    <TextView
+                        style="@style/CalloutBody"
+                        android:text="动手前先看：使用者指南 + 4 张速查图；荣耀 8E5 机型额外看 hnubl 操作手册。" />
+                </LinearLayout>
+
+                <!-- 安卓 root 使用者指南 -->
+                <LinearLayout
+                    android:id="@+id/cardRefGuide"
+                    style="@style/Card"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvRefGuideTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRefGuideDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/ref_read"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardRef1"
+                    style="@style/Card"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvRef1Title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRef1Desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/ref_view"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardRef2"
+                    style="@style/Card"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvRef2Title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRef2Desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/ref_view"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardRef3"
+                    style="@style/Card"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvRef3Title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRef3Desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/ref_view"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardRef4"
+                    style="@style/Card"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvRef4Title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRef4Desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/ref_view"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- hnubl 操作手册（荣耀 8E5 假回锁，移自「工具」标签） -->
+                <LinearLayout
+                    android:id="@+id/cardHnubl"
+                    style="@style/Card"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvHnublTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvHnublDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/ref_read"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ============ Tab 2：状态检测（原「环境准备」改名） ============ -->
+    <ScrollView
+        android:id="@+id/tabDetectContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/sec_detect" />
+
+                <TextView
+                    style="@style/SectionHint"
+                    android:text="@string/sec_env_hint_merged" />
+
+                <!-- 状态一行说完，证据默认收起 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:id="@+id/tvProbe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/probe_idle"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvProbeMore"
+                            style="@style/LinkText"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="12dp"
+                            android:text="@string/probe_detail"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvAuthorize"
+                            style="@style/LinkText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="12dp"
+                            android:text="@string/probe_authorize"
+                            android:textColor="@color/warn"
+                            android:textSize="12sp"
+                            android:visibility="gone" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/btnProbe"
+                            style="@style/LinkText"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="0dp"
+                            android:text="@string/probe_button"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvProbeDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/text_secondary"
+                        android:textIsSelectable="true"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            <!-- 机型（8E5 判断） -->
+            <TextView
+                style="@style/SectionSubTitle"
+                android:text="@string/detect_8e5_title" />
+            <TextView
+                android:id="@+id/tvDetect8e5"
+                style="@style/Card" />
+
+            <!-- SUSFS 开关 -->
+            <TextView
+                style="@style/SectionSubTitle"
+                android:text="@string/detect_susfs_title" />
+            <TextView
+                android:id="@+id/tvDetectSusfs"
+                style="@style/Card" />
+
+            <!-- 框架组合 -->
+            <TextView
+                style="@style/SectionSubTitle"
+                android:text="@string/detect_framework_title" />
+            <TextView
+                android:id="@+id/tvDetectFramework"
+                style="@style/Card" />
+
+            <!-- 模块完整性 / 反向异常 -->
+            <TextView
+                style="@style/SectionSubTitle"
+                android:text="@string/detect_integrity_title" />
+            <TextView
+                android:id="@+id/tvDetectIntegrity"
+                style="@style/Card" />
+
+            <!-- 上一次 / 本次启动原因（持续采集，无需 root） -->
+            <TextView
+                style="@style/SectionSubTitle"
+                android:text="@string/detect_boot_title" />
+            <TextView
+                style="@style/SectionHint"
+                android:text="@string/boot_pull_hint" />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swLowInterference"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:checked="true"
+                android:text="@string/low_interference"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvOpenAppSettings"
+                style="@style/LinkText"
+                android:paddingStart="0dp"
+                android:text="@string/open_app_settings"
+                android:textSize="12sp" />
+            <Button
+                android:id="@+id/btnPullBootDetect"
+                style="@style/Widget.App.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/boot_pull_button"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary" />
+            <TextView
+                android:id="@+id/tvManualMark"
+                style="@style/LinkText"
+                android:layout_marginTop="2dp"
+                android:paddingStart="0dp"
+                android:text="@string/manual_mark"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tvDetectBoot"
+                style="@style/Card" />
+
+            </LinearLayout>
+
+            <!-- 风控环境检测（第二块） -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="风控环境检测" />
+                <TextView
+                    style="@style/SectionHint"
+                    android:text="实跑本机可复现的泄漏检测（属性 / 包名 / 文件痕迹 / 挂载 / 内核 / 进程自身 maps·status）；命中直接给 answer_zh.md 解决方案。仅「侧信道」一项为真实测量启发式（不误报），其余全部真实可跑；完整 135 项可在文档里查。" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:id="@+id/tvEnvSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="点「运行风控环境检测」开始（无需 root 也能跑大部分泄漏检测）"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/btnEnvDetect"
+                            style="@style/LinkText"
+                            android:text="运行风控环境检测"
+                            android:textColor="@color/accent"
+                            android:textSize="12sp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/btnEnvFull"
+                            style="@style/LinkText"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="0dp"
+                            android:text="查看完整检测解决方案（135 项）"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <!-- 导出风险应用名单：复制包名，直接粘贴到隐藏应用列表（HMA）黑名单 -->
+                    <TextView
+                        android:id="@+id/btnExportRisk"
+                        style="@style/LinkText"
+                        android:layout_marginTop="2dp"
+                        android:paddingStart="0dp"
+                        android:text="导出风险应用名单（隐藏列表黑名单用）"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:id="@+id/envCheckContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ============ Tab 3：root 后 ============ -->
+    <ScrollView
+        android:id="@+id/tabPostContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ① 管理器及其分支 -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/sec_post_branch" />
+
+                <TextView
+                    android:id="@+id/tvBranchStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/branch_status_probing"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/spinnerBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="14dp"
+                    android:visibility="gone">
+
+                    <Spinner
+                        android:id="@+id/spinnerBranch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:paddingStart="8dp"
+                        android:paddingTop="12dp"
+                        android:paddingEnd="0dp"
+                        android:paddingBottom="12dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginStart="6dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_down" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvPickManual"
+                    style="@style/LinkText"
+                    android:layout_marginTop="4dp"
+                    android:paddingStart="0dp"
+                    android:text="@string/pick_manual"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvManualHint"
+                    style="@style/LinkText"
+                    android:layout_marginTop="2dp"
+                    android:paddingStart="0dp"
+                    android:text="@string/pick_manual_hint"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvBranchNote"
+                    style="@style/Card" />
+
+                <TextView
+                    android:id="@+id/tvGuidance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:padding="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- ② 生成设置项与模块清单 -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/sec_post_plan" />
+
+                <TextView
+                    style="@style/SectionHint"
+                    android:text="@string/sec_start_hint" />
+
+                <TextView
+                    android:id="@+id/tvPostSusfsNote"
+                    style="@style/Card"
+                    android:textColor="@color/text_secondary" />
+
+                <Button
+                    android:id="@+id/btnNext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/next_button"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/btnInstall"
+                    style="@style/Widget.App.Button.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/install_existing_button"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+
+            <!-- ③ 框架功能恢复 -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/sec_post_recovery" />
+
+                <LinearLayout style="@style/Callout.Info">
+                    <TextView
+                        style="@style/CalloutLabel"
+                        android:text="@string/callout_tip"
+                        android:textColor="@color/callout_info" />
+
+                    <TextView
+                        style="@style/CalloutBody"
+                        android:text="选择要修复的框架（LSPosed / Vector），一键自动修复；另一个框架本次不会启动。" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnRecovery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_card_alt"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/recovery_title"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/recovery_open"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

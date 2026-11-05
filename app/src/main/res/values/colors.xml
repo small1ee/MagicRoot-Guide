@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#FF0F1420</color>
+    <color name="surface">#FF161D2C</color>
+    <color name="surface_alt">#FF1B2434</color>
+    <color name="text_primary">#FFE8EDF5</color>
+    <color name="text_secondary">#FF97A3B8</color>
+    <color name="accent">#FF7C9CFF</color>
+    <color name="required">#FFF87171</color>
+    <color name="optional">#FF8B95A8</color>
+    <color name="divider">#FF2A3348</color>
+    <!-- 识别成功 / 需要确认：只用于状态行，不用于正文 -->
+    <color name="ok">#FF4ADE80</color>
+    <color name="warn">#FFFBBF24</color>
+
+    <!-- 提示说明规范：四档语义色（前景 + 低透明底色），统一「信息 / 注意 / 警告 / 成功」视觉语言 -->
+    <color name="callout_info">#FF8FB0FF</color>
+    <color name="callout_info_bg">#1F7C9CFF</color>
+    <color name="callout_warn">#FFFBCF5C</color>
+    <color name="callout_warn_bg">#1FFBBF24</color>
+    <color name="callout_danger">#FFFF8A82</color>
+    <color name="callout_danger_bg">#1FF87171</color>
+    <color name="callout_success">#FF74E89B</color>
+    <color name="callout_success_bg">#1F4ADE80</color>
+</resources>

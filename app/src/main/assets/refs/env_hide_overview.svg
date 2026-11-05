@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1648" height="1876" viewBox="0 0 1648 1876" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif">
+<rect width="1648" height="1876" fill="#0f1420"/>
+
+<text x="824" y="66" fill="#ffffff" font-size="38" font-weight="bold" text-anchor="middle">🔒 环境隐藏 · 一图速览</text>
+<text x="824" y="108" fill="#8b95a8" font-size="19" text-anchor="middle">先定预期（三级判定）→ 再穿洋葱（七层）→ 三条线路照抄 → 三条铁律 ｜ 依据《安卓 Root 使用者指南》v2.0 第 6 章</text>
+<line x1="470" y1="126" x2="1178" y2="126" stroke="#2a3348" stroke-width="2"/>
+
+<!-- ============ ① 三级判定 ============ -->
+<rect x="70" y="158" width="8" height="26" rx="4" fill="#60a5fa"/>
+<text x="94" y="180" fill="#e8eef7" font-size="26" font-weight="bold">① 先定预期：Play 完整性三级，别拿错目标</text>
+
+<rect x="70" y="200" width="480" height="196" rx="16" fill="#161d2c" stroke="#4ade80" stroke-width="1.6"/>
+<rect x="70" y="200" width="480" height="6" rx="3" fill="#4ade80"/>
+<text x="96" y="256" font-size="28">✅</text>
+<text x="140" y="258" fill="#4ade80" font-size="22" font-weight="bold">基本完整性</text>
+<text x="96" y="292" fill="#6b7688" font-size="15">MEETS_BASIC_INTEGRITY</text>
+<text x="96" y="330" fill="#cdd6e4" font-size="17.5">目标：设备环境完整、未被篡改</text>
+<text x="96" y="366" fill="#4ade80" font-size="17.5" font-weight="bold">root 后稳定可达，绝大多数组合都能过</text>
+
+<rect x="584" y="200" width="480" height="196" rx="16" fill="#161d2c" stroke="#fbbf24" stroke-width="1.6"/>
+<rect x="584" y="200" width="480" height="6" rx="3" fill="#fbbf24"/>
+<text x="610" y="256" font-size="28">⚠️</text>
+<text x="654" y="258" fill="#fbbf24" font-size="22" font-weight="bold">设备完整性</text>
+<text x="610" y="292" fill="#6b7688" font-size="15">MEETS_DEVICE_INTEGRITY　←银行/支付看这级</text>
+<text x="610" y="330" fill="#cdd6e4" font-size="17.5">A12 及以下：指纹伪造可达</text>
+<text x="610" y="366" fill="#fbbf24" font-size="17.5" font-weight="bold">A13+：只能 keybox 伪造或锁回 BL</text>
+
+<rect x="1098" y="200" width="480" height="196" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="1098" y="200" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="1124" y="256" font-size="28">❌</text>
+<text x="1168" y="258" fill="#f87171" font-size="22" font-weight="bold">强完整性</text>
+<text x="1124" y="292" fill="#6b7688" font-size="15">MEETS_STRONG_INTEGRITY</text>
+<text x="1124" y="330" fill="#cdd6e4" font-size="17.5">目标：硬件级强证明（TEE）</text>
+<text x="1124" y="366" fill="#f87171" font-size="17.5" font-weight="bold">解锁 BL 后无长期方案，别追</text>
+
+<rect x="70" y="420" width="1508" height="46" rx="10" fill="#1b1a22" stroke="#3a3348" stroke-width="1.2"/>
+<text x="94" y="449" fill="#fbbf24" font-size="16.5">⚠️ 2025-05 起 Google 收紧 A13+ 的 deviceRecognitionVerdict：硬件「BL 是否上锁」不再能被指纹糊弄 —— 「装个 PIF 就过设备级」只对 A12 及以下成立。</text>
+
+<!-- ============ ② 洋葱七层 ============ -->
+<rect x="70" y="500" width="8" height="26" rx="4" fill="#60a5fa"/>
+<text x="94" y="522" fill="#e8eef7" font-size="26" font-weight="bold">② 洋葱七层：每层解决一类检测，缺哪层漏哪类</text>
+<text x="1578" y="522" fill="#6b7688" font-size="15" text-anchor="end">同色 = 三条线路做法一致</text>
+
+<!-- 表头 -->
+<rect x="70" y="546" width="1508" height="50" rx="8" fill="#1d2536"/>
+<text x="88" y="578" fill="#8b95a8" font-size="16" font-weight="bold">层</text>
+<text x="278" y="578" fill="#8b95a8" font-size="16" font-weight="bold">解决什么问题</text>
+<text x="618" y="578" fill="#60a5fa" font-size="16" font-weight="bold">线路 A · Magisk</text>
+<text x="938" y="578" fill="#4ade80" font-size="16" font-weight="bold">线路 B · KernelSU / Next</text>
+<text x="1298" y="578" fill="#c084fc" font-size="16" font-weight="bold">线路 C · APatch</text>
+
+<!-- row ⓪ -->
+<rect x="70" y="596" width="1508" height="92" fill="#161d2c"/>
+<text x="88" y="636" fill="#e8eef7" font-size="19" font-weight="bold">⓪ Root 本体</text>
+<text x="88" y="662" fill="#6b7688" font-size="15">提供最高权限</text>
+<text x="278" y="636" fill="#cdd6e4" font-size="17">谁在提供 uid 0</text>
+<text x="278" y="662" fill="#6b7688" font-size="15">由内核里那份实现决定</text>
+<text x="618" y="636" fill="#cdd6e4" font-size="16.5">Magisk</text>
+<text x="938" y="636" fill="#cdd6e4" font-size="16.5">KernelSU / KernelSU-Next</text>
+<text x="1298" y="636" fill="#cdd6e4" font-size="16.5">APatch</text>
+
+<!-- row ① -->
+<rect x="70" y="690" width="1508" height="92" fill="#131926"/>
+<text x="88" y="730" fill="#e8eef7" font-size="19" font-weight="bold">① Zygisk 提供者</text>
+<text x="88" y="756" fill="#6b7688" font-size="15">注入 App 进程</text>
+<text x="278" y="730" fill="#cdd6e4" font-size="17">让隐藏模块能 hook 进去</text>
+<text x="278" y="756" fill="#6b7688" font-size="15">只能装一个</text>
+<text x="618" y="730" fill="#cdd6e4" font-size="16.5">内置开关，打开即可</text>
+<text x="938" y="730" fill="#cdd6e4" font-size="16.5">Zygisk Next / ReZygisk /</text>
+<text x="938" y="756" fill="#cdd6e4" font-size="16.5">NeoZygisk（三选一）</text>
+<text x="1298" y="730" fill="#cdd6e4" font-size="16.5">Zygisk Next 或</text>
+<text x="1298" y="756" fill="#cdd6e4" font-size="16.5">ReZygisk（二选一）</text>
+
+<!-- row ② -->
+<rect x="70" y="784" width="1508" height="92" fill="#161d2c"/>
+<text x="88" y="824" fill="#e8eef7" font-size="19" font-weight="bold">② Root 隐藏器</text>
+<text x="88" y="850" fill="#6b7688" font-size="15">对指定 App 隐去 root</text>
+<text x="278" y="824" fill="#cdd6e4" font-size="17">按名单藏掉 root 痕迹</text>
+<text x="278" y="850" fill="#6b7688" font-size="15">隐藏「有没有 root」</text>
+<text x="618" y="824" fill="#4ade80" font-size="16.5">Zygisk Next 自带隐藏</text>
+<text x="618" y="850" fill="#6b7688" font-size="15.5">Denylist Policy = Enforced</text>
+<text x="938" y="824" fill="#4ade80" font-size="16.5">ZN 策略 + App Profile</text>
+<text x="938" y="850" fill="#6b7688" font-size="15.5">root 关 + Umount modules 开</text>
+<text x="1298" y="824" fill="#4ade80" font-size="16.5">Treat Wheel / NoHello</text>
+<text x="1298" y="850" fill="#f87171" font-size="15.5">⚠️ 不支持 Shamiko</text>
+
+<!-- row ③ 三线通用 -->
+<rect x="70" y="878" width="1508" height="92" fill="#131926"/>
+<rect x="70" y="878" width="4" height="92" fill="#fbbf24"/>
+<text x="88" y="918" fill="#e8eef7" font-size="19" font-weight="bold">③ 指纹修复</text>
+<text x="88" y="944" fill="#6b7688" font-size="15">过基本级</text>
+<text x="278" y="918" fill="#cdd6e4" font-size="17">伪造设备指纹骗过判定</text>
+<text x="278" y="944" fill="#6b7688" font-size="15">A12 及以下也能过设备级</text>
+<rect x="600" y="886" width="970" height="76" rx="8" fill="#1b2231"/>
+<text x="618" y="918" fill="#fbbf24" font-size="17" font-weight="bold">三线通用 →</text>
+<text x="726" y="918" fill="#cdd6e4" font-size="16.5">PIFork v18 或 KOWX712/PlayIntegrityFix，<tspan fill="#f87171">只装一个</tspan>；脚本 autopif2.sh 生成指纹</text>
+<text x="726" y="946" fill="#6b7688" font-size="15.5">配置在 /data/adb/modules/playintegrityfix/（v15 起用 pif.prop）　·　它不隐藏 root</text>
+
+<!-- row ④ 三线通用 -->
+<rect x="70" y="972" width="1508" height="92" fill="#161d2c"/>
+<rect x="70" y="972" width="4" height="92" fill="#fbbf24"/>
+<text x="88" y="1012" fill="#e8eef7" font-size="19" font-weight="bold">④ 密钥鉴证伪造</text>
+<text x="88" y="1038" fill="#6b7688" font-size="15">A13+ 想过设备级才要</text>
+<text x="278" y="1012" fill="#cdd6e4" font-size="17">骗过硬件「BL 已锁」判定</text>
+<text x="278" y="1038" fill="#6b7688" font-size="15">有代价，见右侧</text>
+<rect x="600" y="980" width="970" height="76" rx="8" fill="#1b2231"/>
+<text x="618" y="1012" fill="#fbbf24" font-size="17" font-weight="bold">三线通用 →</text>
+<text x="726" y="1012" fill="#cdd6e4" font-size="16.5">Tricky Store 1.4.1 / TEESimulator　<tspan fill="#f87171">不自带可用 keybox，内置那份 AOSP 无效</tspan></text>
+<text x="726" y="1040" fill="#6b7688" font-size="15.5">keybox 放 /data/adb/tricky_store/　·　公共 keybox 随时被吊销，别把唯一银行入口压在这</text>
+
+<!-- row ⑤ 三线通用 -->
+<rect x="70" y="1066" width="1508" height="92" fill="#131926"/>
+<rect x="70" y="1066" width="4" height="92" fill="#fbbf24"/>
+<text x="88" y="1106" fill="#e8eef7" font-size="19" font-weight="bold">⑤ 应用列表隐藏</text>
+<text x="88" y="1132" fill="#6b7688" font-size="15">藏「我装了什么」</text>
+<text x="278" y="1106" fill="#cdd6e4" font-size="17">阻止 App 枚举已装应用</text>
+<text x="278" y="1132" fill="#6b7688" font-size="15">管理器包名最容易被扫</text>
+<rect x="600" y="1074" width="970" height="76" rx="8" fill="#1b2231"/>
+<text x="618" y="1106" fill="#fbbf24" font-size="17" font-weight="bold">三线通用 →</text>
+<text x="726" y="1106" fill="#cdd6e4" font-size="16.5">① 管理器本体改名重装（藏自己）　② HMA 3.8.3 / HMA-OSS（藏其它 App 列表）</text>
+<text x="726" y="1134" fill="#6b7688" font-size="15.5">HMA 要 Xposed 框架：A15+ 只用 Vector；或改用 HMA-OSS-Zygisk 免框架</text>
+
+<!-- row ⑥ -->
+<rect x="70" y="1160" width="1508" height="92" fill="#161d2c"/>
+<text x="88" y="1200" fill="#e8eef7" font-size="19" font-weight="bold">⑥ 内核级隐藏</text>
+<text x="88" y="1226" fill="#6b7688" font-size="15">可选 · 进阶</text>
+<text x="278" y="1200" fill="#cdd6e4" font-size="17">文件系统 / syscall 层藏挂载</text>
+<text x="278" y="1226" fill="#6b7688" font-size="15">本线路的王牌</text>
+<text x="618" y="1200" fill="#6b7688" font-size="16.5">—（基本用不上）</text>
+<text x="938" y="1200" fill="#4ade80" font-size="16.5">SUSFS 1.5.2+</text>
+<text x="938" y="1226" fill="#6b7688" font-size="15.5">需打过补丁的内核；内核名要干净</text>
+<text x="1298" y="1200" fill="#6b7688" font-size="16.5">—（KPM 可部分实现）</text>
+
+<!-- 洋葱口诀条 -->
+<rect x="70" y="1268" width="1508" height="46" rx="10" fill="#16202c" stroke="#2a4152" stroke-width="1.2"/>
+<text x="94" y="1297" fill="#7dd3fc" font-size="16.5">口诀：①② 管「藏 root」　③ 管「骗旧规则」　④ 管「骗硬件」　⑤ 管「藏装了什么」　⑥ 是内核级终极保险 —— 从 ③ 往上都不是必装，缺哪类检测就补哪层</text>
+
+<!-- ============ ③ 三条铁律 ============ -->
+<rect x="70" y="1348" width="8" height="26" rx="4" fill="#f87171"/>
+<text x="94" y="1370" fill="#e8eef7" font-size="26" font-weight="bold">③ 三条铁律（违反必翻车）</text>
+
+<rect x="70" y="1392" width="480" height="190" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="70" y="1392" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="96" y="1444" fill="#f87171" font-size="20" font-weight="bold">Zygisk 提供者只能装一个</text>
+<text x="96" y="1482" fill="#cdd6e4" font-size="16.5">Magisk 内置 Zygisk 与外挂（Zygisk</text>
+<text x="96" y="1510" fill="#cdd6e4" font-size="16.5">Next / ReZygisk / NeoZygisk）互斥，</text>
+<text x="96" y="1538" fill="#cdd6e4" font-size="16.5">换用独立版前先关掉内置的</text>
+
+<rect x="584" y="1392" width="480" height="190" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="584" y="1392" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="610" y="1444" fill="#f87171" font-size="20" font-weight="bold">Enforce 得按「哪一代」配</text>
+<text x="610" y="1482" fill="#cdd6e4" font-size="16.5">Shamiko（旧）→ 关 Enforce；</text>
+<text x="610" y="1510" fill="#cdd6e4" font-size="16.5">Zygisk Next 自带隐藏 → 开 Enforced。</text>
+<text x="610" y="1538" fill="#fbbf24" font-size="16.5">旧教程「一律关」= 配错代</text>
+
+<rect x="1098" y="1392" width="480" height="190" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="1098" y="1392" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="1124" y="1444" fill="#f87171" font-size="20" font-weight="bold">PIF 不负责隐藏 root</text>
+<text x="1124" y="1482" fill="#cdd6e4" font-size="16.5">它只伪造指纹过完整性判定，隐藏</text>
+<text x="1124" y="1510" fill="#cdd6e4" font-size="16.5">靠第 ② 层。PIF 与 Tricky Store、</text>
+<text x="1124" y="1538" fill="#cdd6e4" font-size="16.5">多个 PIF 分支之间别叠着乱配</text>
+
+<!-- ============ ④ 三个高频翻车 ============ -->
+<rect x="70" y="1622" width="8" height="26" rx="4" fill="#fbbf24"/>
+<text x="94" y="1644" fill="#e8eef7" font-size="26" font-weight="bold">④ 三个高频翻车（按症状查）</text>
+
+<rect x="70" y="1666" width="480" height="150" rx="14" fill="#161d2c" stroke="#fbbf24" stroke-width="1.4"/>
+<text x="96" y="1712" fill="#fbbf24" font-size="19" font-weight="bold">判定全挂，连基本级都没了</text>
+<text x="96" y="1746" fill="#cdd6e4" font-size="16.5">模块冲突：两个 PIF / 两个 Zygisk</text>
+<text x="96" y="1774" fill="#8b95a8" font-size="16">→ 禁一个重启，逐个试；清 GMS 缓存</text>
+
+<rect x="584" y="1666" width="480" height="150" rx="14" fill="#161d2c" stroke="#fbbf24" stroke-width="1.4"/>
+<text x="610" y="1712" fill="#fbbf24" font-size="19" font-weight="bold">隐藏「突然失效」</text>
+<text x="610" y="1746" fill="#cdd6e4" font-size="16.5">Shamiko 搭了 ReZygisk / Enforce 配错代</text>
+<text x="610" y="1774" fill="#8b95a8" font-size="16">→ 认清代际重配；确认只跑一个引擎</text>
+
+<rect x="1098" y="1666" width="480" height="150" rx="14" fill="#161d2c" stroke="#fbbf24" stroke-width="1.4"/>
+<text x="1124" y="1712" fill="#fbbf24" font-size="19" font-weight="bold">基本级过、设备级不过</text>
+<text x="1124" y="1746" fill="#cdd6e4" font-size="16.5">A13+ 是硬件判定，换指纹/换分支都没用</text>
+<text x="1124" y="1774" fill="#8b95a8" font-size="16">→ 查 uname -r 是否命中黑名单内核名</text>
+
+<line x1="70" y1="1840" x2="1578" y2="1840" stroke="#2a3348" stroke-width="1.5"/>
+<text x="824" y="1866" fill="#4a5468" font-size="15" text-anchor="middle">环境隐藏速览图 v1.0 ｜ 2026-10-30 ｜ 配套《安卓 Root 使用者指南》v2.0 第 6 章 ｜ 版本号请回项目 Release 页复核</text>
+</svg>

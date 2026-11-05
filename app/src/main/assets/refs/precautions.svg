@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1648" height="1606" viewBox="0 0 1648 1606" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif">
+<rect width="1648" height="1606" fill="#0f1420"/>
+<text x="824.0" y="66" fill="#ffffff" font-size="38" font-weight="bold" text-anchor="middle">⚠️ Root 模块注意事项 · 一图速览</text>
+<text x="824.0" y="108" fill="#8b95a8" font-size="19" text-anchor="middle">红线级(红) → 高频坑(橙) → 纪律性(黄) ｜ 含 FinaSU 专项三条 ｜ 依据见《安卓 Root 实战手册 v1.2》第 5.F / 7 / 8.7 / 9 章</text>
+<line x1="524.0" y1="126" x2="1124.0" y2="126" stroke="#2a3348" stroke-width="2"/>
+<rect x="70" y="150" width="480" height="250" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="70" y="150" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="96" y="208" font-size="30">💀</text>
+<text x="142" y="210" fill="#f87171" font-size="22" font-weight="bold">改物理分区 = 硬砖风险</text>
+<text x="98" y="268" fill="#cdd6e4" font-size="17.5">锁 BL 时改 /system /vendor，AVB 校验</text>
+<text x="98" y="302" fill="#cdd6e4" font-size="17.5">失败且无 fastboot 救援，只能售后</text>
+<text x="526" y="380" fill="#4a5468" font-size="15" text-anchor="end">NO.01</text>
+<rect x="584" y="150" width="480" height="250" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="584" y="150" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="610" y="208" font-size="30">⛔</text>
+<text x="656" y="210" fill="#f87171" font-size="22" font-weight="bold">不要用恢复出厂救砖</text>
+<text x="612" y="268" fill="#cdd6e4" font-size="17.5">会连加密密钥一起销毁，数据全丢</text>
+<text x="612" y="302" fill="#cdd6e4" font-size="17.5">按「四级自救」顺序排查，别跳级</text>
+<text x="1040" y="380" fill="#4a5468" font-size="15" text-anchor="end">NO.02</text>
+<rect x="1098" y="150" width="480" height="250" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="1098" y="150" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="1124" y="208" font-size="30">🔓</text>
+<text x="1170" y="210" fill="#f87171" font-size="22" font-weight="bold">SELinux 保持 Enforcing</text>
+<text x="1126" y="268" fill="#cdd6e4" font-size="17.5">要求 setenforce 0 才能工作的模块</text>
+<text x="1126" y="302" fill="#cdd6e4" font-size="17.5">一律打问号：正规做法是修补 sepolicy</text>
+<text x="1554" y="380" fill="#4a5468" font-size="15" text-anchor="end">NO.03</text>
+<rect x="70" y="434" width="480" height="250" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="70" y="434" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="96" y="492" font-size="30">📦</text>
+<text x="142" y="494" fill="#f87171" font-size="22" font-weight="bold">模块只认官方 Releases</text>
+<text x="98" y="552" fill="#cdd6e4" font-size="17.5">TG 整合包 / 网盘短链 = 投毒重灾区</text>
+<text x="98" y="586" fill="#cdd6e4" font-size="17.5">root 模块等于给你系统装 ring0 后门</text>
+<text x="526" y="664" fill="#4a5468" font-size="15" text-anchor="end">NO.04</text>
+<rect x="584" y="434" width="480" height="250" rx="16" fill="#161d2c" stroke="#f87171" stroke-width="1.6"/>
+<rect x="584" y="434" width="480" height="6" rx="3" fill="#f87171"/>
+<text x="610" y="492" font-size="30">🚫</text>
+<text x="656" y="494" fill="#f87171" font-size="22" font-weight="bold">临时 root 不是一种分支</text>
+<text x="612" y="552" fill="#cdd6e4" font-size="17.5">注入的 .ko 决定分支，管理器只是客户端</text>
+<text x="612" y="586" fill="#cdd6e4" font-size="17.5">装别家管理器只会显示「未安装」</text>
+<text x="1040" y="664" fill="#4a5468" font-size="15" text-anchor="end">NO.05</text>
+<rect x="1098" y="434" width="480" height="250" rx="16" fill="#161d2c" stroke="#fb923c" stroke-width="1.6"/>
+<rect x="1098" y="434" width="480" height="6" rx="3" fill="#fb923c"/>
+<text x="1124" y="492" font-size="30">🧩</text>
+<text x="1170" y="494" fill="#fb923c" font-size="22" font-weight="bold">官方系先装 metamodule</text>
+<text x="1126" y="552" fill="#cdd6e4" font-size="17.5">官方 KSU / BakaSU / YukiSU / FinaSU</text>
+<text x="1126" y="586" fill="#cdd6e4" font-size="17.5">不装元模块 = 普通模块全部静默失效</text>
+<text x="1554" y="664" fill="#4a5468" font-size="15" text-anchor="end">NO.06</text>
+<rect x="70" y="718" width="480" height="250" rx="16" fill="#161d2c" stroke="#fb923c" stroke-width="1.6"/>
+<rect x="70" y="718" width="480" height="6" rx="3" fill="#fb923c"/>
+<text x="96" y="776" font-size="30">⚡</text>
+<text x="142" y="778" fill="#fb923c" font-size="22" font-weight="bold">Zygisk 实现只能装一套</text>
+<text x="98" y="836" fill="#cdd6e4" font-size="17.5">内置(FolkZygisk)与外挂(ZN/ReZygisk)</text>
+<text x="98" y="870" fill="#cdd6e4" font-size="17.5">二选一，混装 = 两套注入互相打架</text>
+<text x="526" y="948" fill="#4a5468" font-size="15" text-anchor="end">NO.07</text>
+<rect x="584" y="718" width="480" height="250" rx="16" fill="#161d2c" stroke="#fb923c" stroke-width="1.6"/>
+<rect x="584" y="718" width="480" height="6" rx="3" fill="#fb923c"/>
+<text x="610" y="776" font-size="30">🛡️</text>
+<text x="656" y="778" fill="#fb923c" font-size="22" font-weight="bold">SUSFS 内核必须精确匹配</text>
+<text x="612" y="836" fill="#cdd6e4" font-size="17.5">KMI（如 android16-6.12）错一格</text>
+<text x="612" y="870" fill="#cdd6e4" font-size="17.5">不开机；刷内核前必备份 init_boot</text>
+<text x="1040" y="948" fill="#4a5468" font-size="15" text-anchor="end">NO.08</text>
+<rect x="1098" y="718" width="480" height="250" rx="16" fill="#161d2c" stroke="#fb923c" stroke-width="1.6"/>
+<rect x="1098" y="718" width="480" height="6" rx="3" fill="#fb923c"/>
+<text x="1124" y="776" font-size="30">🔄</text>
+<text x="1170" y="778" fill="#fb923c" font-size="22" font-weight="bold">临时 root 靠软重启续命</text>
+<text x="1126" y="836" fill="#cdd6e4" font-size="17.5">物理重启即归零；模块靠 ksud</text>
+<text x="1126" y="870" fill="#cdd6e4" font-size="17.5">soft-reboot 重放 boot 阶段才挂得上</text>
+<text x="1554" y="948" fill="#4a5468" font-size="15" text-anchor="end">NO.09</text>
+<rect x="70" y="1002" width="480" height="250" rx="16" fill="#161d2c" stroke="#fb923c" stroke-width="1.6"/>
+<rect x="70" y="1002" width="480" height="6" rx="3" fill="#fb923c"/>
+<text x="96" y="1060" font-size="30">🧰</text>
+<text x="142" y="1062" fill="#fb923c" font-size="22" font-weight="bold">FinaSU 是「全家桶」，别重复装</text>
+<text x="98" y="1120" fill="#cdd6e4" font-size="17.5">已内置 FolkZygisk / Sui / Folk-Mount</text>
+<text x="98" y="1154" fill="#cdd6e4" font-size="17.5">再装 ZN、Shizuku、元模块 = 抢服务</text>
+<text x="526" y="1232" fill="#4a5468" font-size="15" text-anchor="end">NO.10</text>
+<rect x="584" y="1002" width="480" height="250" rx="16" fill="#161d2c" stroke="#fb923c" stroke-width="1.6"/>
+<rect x="584" y="1002" width="480" height="6" rx="3" fill="#fb923c"/>
+<text x="610" y="1060" font-size="30">🔑</text>
+<text x="656" y="1062" fill="#fb923c" font-size="22" font-weight="bold">FinaSU 授权是白名单，不弹窗</text>
+<text x="612" y="1120" fill="#cdd6e4" font-size="17.5">默认任何 App 都没有 root，新 App</text>
+<text x="612" y="1154" fill="#cdd6e4" font-size="17.5">必须手动加白名单（第一大坑）</text>
+<text x="1040" y="1232" fill="#4a5468" font-size="15" text-anchor="end">NO.11</text>
+<rect x="1098" y="1002" width="480" height="250" rx="16" fill="#161d2c" stroke="#fbbf24" stroke-width="1.6"/>
+<rect x="1098" y="1002" width="480" height="6" rx="3" fill="#fbbf24"/>
+<text x="1124" y="1060" font-size="30">💾</text>
+<text x="1170" y="1062" fill="#fbbf24" font-size="22" font-weight="bold">解锁前先做全量备份</text>
+<text x="1126" y="1120" fill="#cdd6e4" font-size="17.5">init_boot / abl 双槽 + GPT 表导出电脑</text>
+<text x="1126" y="1154" fill="#cdd6e4" font-size="17.5">解锁流程会清空数据，不可跳过</text>
+<text x="1554" y="1232" fill="#4a5468" font-size="15" text-anchor="end">NO.12</text>
+<rect x="70" y="1286" width="480" height="250" rx="16" fill="#161d2c" stroke="#fbbf24" stroke-width="1.6"/>
+<rect x="70" y="1286" width="480" height="6" rx="3" fill="#fbbf24"/>
+<text x="96" y="1344" font-size="30">🏦</text>
+<text x="142" y="1346" fill="#fbbf24" font-size="22" font-weight="bold">银行 App 排查讲顺序</text>
+<text x="98" y="1404" fill="#cdd6e4" font-size="17.5">先看 Integrity 三项 → 隐藏包名 →</text>
+<text x="98" y="1438" fill="#cdd6e4" font-size="17.5">DenyList → HMA → 最后才 Tricky Store</text>
+<text x="526" y="1516" fill="#4a5468" font-size="15" text-anchor="end">NO.13</text>
+<rect x="584" y="1286" width="480" height="250" rx="16" fill="#161d2c" stroke="#fbbf24" stroke-width="1.6"/>
+<rect x="584" y="1286" width="480" height="6" rx="3" fill="#fbbf24"/>
+<text x="610" y="1344" font-size="30">🧯</text>
+<text x="656" y="1346" fill="#fbbf24" font-size="22" font-weight="bold">OTA 前先回刷 stock</text>
+<text x="612" y="1404" fill="#cdd6e4" font-size="17.5">先刷回 init_boot_stock → 升级 →</text>
+<text x="612" y="1438" fill="#cdd6e4" font-size="17.5">提取新固件重新修补刷入，别硬扛</text>
+<text x="1040" y="1516" fill="#4a5468" font-size="15" text-anchor="end">NO.14</text>
+<rect x="1098" y="1286" width="480" height="250" rx="16" fill="#161d2c" stroke="#fbbf24" stroke-width="1.6"/>
+<rect x="1098" y="1286" width="480" height="6" rx="3" fill="#fbbf24"/>
+<text x="1124" y="1344" font-size="30">🤝</text>
+<text x="1170" y="1346" fill="#fbbf24" font-size="22" font-weight="bold">管理器与内核必须同分支</text>
+<text x="1126" y="1404" fill="#cdd6e4" font-size="17.5">版本号跨分支不通用，装错显示</text>
+<text x="1126" y="1438" fill="#cdd6e4" font-size="17.5">「未安装 / 不支持」，先配对再装模块</text>
+<text x="1554" y="1516" fill="#4a5468" font-size="15" text-anchor="end">NO.15</text>
+<text x="824.0" y="1580" fill="#5a6478" font-size="16" text-anchor="middle">每做一次变更：重启（或软重启）→ 验证 → 再加下一项；出问题立刻回退上一步</text>
+</svg>

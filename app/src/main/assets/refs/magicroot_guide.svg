@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="980" viewBox="0 0 1800 980">
+<defs><style><![CDATA[
+text{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+.m{font-family:"SF Mono",Menlo,Consolas,monospace}
+]]></style></defs>
+
+<rect width="1800" height="980" fill="#0F1115"/>
+
+<text x="60" y="72" fill="#E8EAED" font-size="40" font-weight="700">MagicRoot · 三条线，选一条</text>
+<text x="60" y="110" fill="#72808F" font-size="19">荣耀 Magic 8 Pro BKQ-AN10 · MagicOS 11.0.0.110 · MagicRoot 1.0.5 late-load · NeoZygisk v2.4 + Vector 2.2 (3116) / API 102</text>
+
+<rect x="60" y="134" width="1680" height="60" rx="12" fill="#171C25" stroke="#2A3340" stroke-width="1.5"/>
+<rect x="60" y="134" width="4" height="60" fill="#D9A441"/>
+<text x="84" y="171" fill="#A8B4C2" font-size="17">前提不变：</text>
+<text x="190" y="171" fill="#E8EAED" font-size="17" font-weight="650">boot 分区写不进去，只能运行时注入内核 —— 真重启 root 就消失，模块脚本永不自动执行。下面三条线都在这个框里。</text>
+
+<rect x="60" y="198" width="1680" height="22" rx="6" fill="#E0605B" fill-opacity="0.15" stroke="#E0605B" stroke-width="1.5"/>
+<text x="84" y="214" fill="#FF8A85" font-size="14" font-weight="700">硬限制：hnubl 假回锁（线 2）仅 8e5 平台支持；非 8e5 机型不支持，请勿走线 2，回线 1 / 线 3</text>
+
+<!-- ============ 线 1 : 稳定 ============ -->
+<rect x="60" y="222" width="544" height="560" rx="16" fill="#171C25" stroke="#2A3340" stroke-width="1.5"/>
+<rect x="60" y="222" width="544" height="3" fill="#3FB27F"/>
+<text x="84" y="284" fill="#3FB27F" font-size="42" font-weight="700" class="m">01</text>
+<text x="84" y="330" fill="#E8EAED" font-size="23" font-weight="700">我想 root + Xposed 稳定用</text>
+<text x="84" y="368" fill="#72808F" font-size="13" font-weight="700" class="m" letter-spacing="1.5">结论</text>
+<text x="84" y="400" fill="#3FB27F" font-size="21" font-weight="700">关 SuSFS，按流程起框架</text>
+<line x1="84" y1="420" x2="580" y2="420" stroke="#222A35"/>
+<circle cx="88" cy="451" r="3.5" fill="#3FB27F"/>
+<text x="102" y="456" fill="#E8EAED" font-size="16.5" font-weight="600">提权 → 单 monitor → daemon → 换代</text>
+<text x="102" y="480" fill="#72808F" font-size="14">换代只用 setprop ctl.restart zygote</text>
+<text x="102" y="500" fill="#72808F" font-size="14">daemon 一律 app_process -Xnoimage-dex2oat 直拉；两框架共用清残留</text>
+<circle cx="88" cy="515" r="3.5" fill="#3FB27F"/>
+<text x="102" y="520" fill="#E8EAED" font-size="16.5" font-weight="600">一键 sbh-bringup.sh vector</text>
+<text x="102" y="544" fill="#72808F" font-size="14">缺件自愈 + 强制单 monitor + 换代自检</text>
+<text x="102" y="564" fill="#72808F" font-size="14">恢复页单选：选中谁就修谁（LSPosed / Vector）</text>
+<circle cx="88" cy="579" r="3.5" fill="#3FB27F"/>
+<text x="102" y="584" fill="#E8EAED" font-size="16.5" font-weight="600">验证三条全过才算成功</text>
+<text x="102" y="608" fill="#72808F" font-size="14">injected · 2.2 / 3116 / API 102 · boot_id 未变</text>
+<text x="102" y="630" fill="#72808F" font-size="14">lspd 存活 + zygiskd64-zygisk_lsposed 出现</text>
+<rect x="76" y="642" width="512" height="118" rx="10" fill="#1D2430" stroke="#222A35"/>
+<text x="92" y="670" fill="#72808F" font-size="12" font-weight="700" class="m" letter-spacing="1.5">代价 / 为什么稳</text>
+<text x="92" y="696" fill="#A8B4C2" font-size="14">每次真重启都要重做一遍。</text>
+<text x="92" y="720" fill="#A8B4C2" font-size="14">关 SuSFS 后 kernel_stp 15 秒 0 次，不复位。</text>
+<text x="92" y="744" fill="#A8B4C2" font-size="14">正常换代不用关闸门 —— 日常默认路径。</text>
+
+<!-- ============ 线 2 : 一劳永逸 ============ -->
+<rect x="628" y="222" width="544" height="560" rx="16" fill="#171C25" stroke="#2A3340" stroke-width="1.5"/>
+<rect x="628" y="222" width="544" height="3" fill="#D9A441"/>
+<text x="652" y="284" fill="#D9A441" font-size="42" font-weight="700" class="m">02</text>
+<text x="652" y="330" fill="#E8EAED" font-size="23" font-weight="700">我想一劳永逸</text>
+<text x="652" y="368" fill="#72808F" font-size="13" font-weight="700" class="m" letter-spacing="1.5">结论</text>
+<text x="652" y="400" fill="#D9A441" font-size="21" font-weight="700">early-load（hnubl 假回锁）· 仅 8e5</text>
+<line x1="652" y1="420" x2="1148" y2="420" stroke="#222A35"/>
+<circle cx="656" cy="451" r="3.5" fill="#D9A441"/>
+<text x="670" y="456" fill="#E8EAED" font-size="16.5" font-weight="600">修补 ABL → 刷 KSU 版 init_boot</text>
+<text x="670" y="480" fill="#72808F" font-size="14">AVB 哈希恒 0、状态假报 locked</text>
+<circle cx="656" cy="515" r="3.5" fill="#D9A441"/>
+<text x="670" y="520" fill="#E8EAED" font-size="16.5" font-weight="600">换来什么</text>
+<text x="670" y="544" fill="#72808F" font-size="14">模块开机自启、软重启正常、暴露面更小</text>
+<circle cx="656" cy="579" r="3.5" fill="#D9A441"/>
+<text x="670" y="584" fill="#E8EAED" font-size="16.5" font-weight="600">第一步只做：备份 + 识别</text>
+<text x="670" y="608" fill="#72808F" font-size="14">确认能匹配 ABL，不写分区</text>
+<rect x="644" y="642" width="512" height="118" rx="10" fill="#1D2430" stroke="#222A35"/>
+<text x="660" y="670" fill="#72808F" font-size="12" font-weight="700" class="m" letter-spacing="1.5">代价</text>
+<text x="660" y="696" fill="#A8B4C2" font-size="14">仅 8e5 平台（BKQ-AN10，aph112/aph136）支持；非 8e5 不支持。</text>
+<text x="660" y="720" fill="#A8B4C2" font-size="14">恢复只到 Fastboot，没有 EDL / 9008。</text>
+<text x="660" y="744" fill="#A8B4C2" font-size="14">ABL 写坏需外部救砖；每次 OTA 重做。</text>
+
+<!-- ============ 线 3 : SuSFS 不行 ============ -->
+<rect x="1196" y="222" width="544" height="560" rx="16" fill="#171C25" stroke="#2A3340" stroke-width="1.5"/>
+<rect x="1196" y="222" width="544" height="3" fill="#E0605B"/>
+<text x="1220" y="284" fill="#E0605B" font-size="42" font-weight="700" class="m">03</text>
+<text x="1220" y="330" fill="#E8EAED" font-size="23" font-weight="700">我想只靠 SuSFS 解决</text>
+<text x="1220" y="368" fill="#72808F" font-size="13" font-weight="700" class="m" letter-spacing="1.5">结论</text>
+<text x="1220" y="400" fill="#E0605B" font-size="21" font-weight="700">不行 —— 它是放大器，不是方案</text>
+<line x1="1220" y1="420" x2="1716" y2="420" stroke="#222A35"/>
+<circle cx="1224" cy="451" r="3.5" fill="#E0605B"/>
+<text x="1238" y="456" fill="#E8EAED" font-size="16.5" font-weight="600">藏不住</text>
+<text x="1238" y="480" fill="#72808F" font-size="14">taint=4608 / proc/susfs_* / sys/module / hook</text>
+<circle cx="1224" cy="515" r="3.5" fill="#E0605B"/>
+<text x="1238" y="520" fill="#E8EAED" font-size="16.5" font-weight="600">反而更不稳</text>
+<text x="1238" y="544" fill="#72808F" font-size="14">STP 1 次/秒 → 解锁复位、软重启卡动画</text>
+<circle cx="1224" cy="579" r="3.5" fill="#E0605B"/>
+<text x="1238" y="584" fill="#E8EAED" font-size="16.5" font-weight="600">对目标也无效</text>
+<text x="1238" y="608" fill="#72808F" font-size="14">银行 / 反作弊 / PI 走 TEE，不读列表</text>
+<rect x="1212" y="642" width="512" height="118" rx="10" fill="#1D2430" stroke="#222A35"/>
+<text x="1228" y="670" fill="#72808F" font-size="12" font-weight="700" class="m" letter-spacing="1.5">唯一用途</text>
+<text x="1228" y="696" fill="#A8B4C2" font-size="14">临时过某个读列表的 App，用完立刻关。</text>
+<text x="1228" y="720" fill="#A8B4C2" font-size="14">既稳又藏在 late-load 下不存在。</text>
+<text x="1228" y="744" fill="#A8B4C2" font-size="14">想要干净只能走线 2 换启动链。</text>
+
+<!-- ============ 一句话 ============ -->
+<rect x="60" y="806" width="1680" height="104" rx="14" fill="#171C25" stroke="#2A3340" stroke-width="1.5"/>
+<text x="84" y="838" fill="#E8EAED" font-size="17" font-weight="700">一句话</text>
+<text x="84" y="876" fill="#3FB27F" font-size="16.5" font-weight="700">01</text>
+<text x="124" y="876" fill="#A8B4C2" font-size="16.5">要稳定 → 关 SuSFS + bringup，重启重做</text>
+<text x="652" y="876" fill="#D9A441" font-size="16.5" font-weight="700">02</text>
+<text x="692" y="876" fill="#A8B4C2" font-size="16.5">不重来 → early-load（仅 8e5），先备份 + 识别</text>
+<text x="1220" y="876" fill="#E0605B" font-size="16.5" font-weight="700">03</text>
+<text x="1260" y="876" fill="#A8B4C2" font-size="16.5">靠 SuSFS 藏 → 做不到，别常驻</text>
+
+<line x1="60" y1="930" x2="1740" y2="930" stroke="#222A35"/>
+<text x="60" y="958" fill="#72808F" font-size="14">依据：MagicRoot使用指南.md（2026-11-05 实机 A/B）　·　基线：SuSFS 关闭 / taint=4608　·　v3 简化版：只保留三条线　·　旧版状态排查见 04-决策图.md</text>
+</svg>

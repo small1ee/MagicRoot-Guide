@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1420">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Root 模块引导</title>
+<style>
+  :root{
+    --bg:#0f1420; --surface:#161d2c; --surface2:#1b2434;
+    --text:#e8edf5; --sub:#97a3b8; --accent:#7c9cff;
+    --red:#f87171; --amber:#fbbf24; --green:#34d399; --line:#2a3348;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+       font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+  h1{font-size:24px;margin:6px 0 4px}
+  .sub{color:var(--sub);font-size:13px;margin-bottom:16px}
+  h2{font-size:16px;margin:24px 0 10px;color:var(--text)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .chip{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--sub)}
+  .chip.req{color:var(--red);border-color:rgba(248,113,113,.5)}
+  .chip.opt{color:var(--sub)}
+  .quiz{display:flex;flex-direction:column;gap:8px}
+  .qbtn{width:100%;text-align:left;background:var(--surface2);color:var(--text);border:1px solid var(--line);
+        border-radius:10px;padding:11px 12px;font-size:14px;cursor:pointer}
+  .qbtn:active{background:#232e42}
+  select{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--line);
+         border-radius:10px;padding:11px;font-size:15px;margin-top:6px}
+  .note{margin-top:10px;background:var(--surface);border-left:3px solid var(--accent);
+        border-radius:8px;padding:10px 12px;color:var(--sub);font-size:13px}
+  .warn{border-left-color:var(--red)}
+  .bar{height:8px;background:var(--surface2);border-radius:999px;overflow:hidden;margin:10px 0 4px}
+  .bar>i{display:block;height:100%;background:var(--green);width:0;transition:width .25s}
+  .prog{font-size:13px;color:var(--sub)}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .step.done{opacity:.55}
+  .shead{display:flex;align-items:flex-start;gap:10px}
+  .shead input{width:20px;height:20px;margin-top:3px;flex:0 0 auto}
+  .stitle{font-weight:700;font-size:15.5px;flex:1}
+  .sdesc{color:var(--sub);font-size:13.5px;margin-top:6px}
+  .sverify{color:var(--accent);font-size:12.5px;margin-top:6px}
+  .swarn{color:var(--red);font-size:12.5px;margin-top:6px}
+  .btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .btn{background:var(--surface2);color:var(--text);border:1px solid var(--line);border-radius:9px;
+       padding:7px 12px;font-size:13px;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn:active{background:#232e42}
+  .foot{margin-top:26px;border-top:1px solid var(--line);padding-top:14px;color:var(--sub);font-size:12.5px}
+  .foot b{color:var(--red)}
+  .hide{display:none}
+  code{background:#0b1018;border:1px solid var(--line);border-radius:6px;padding:6px 8px;
+       display:block;margin-top:8px;font-size:12.5px;color:#cbd5e1;overflow-x:auto;white-space:pre-wrap}
+  .tabs{display:flex;gap:8px;margin:16px 0 4px}
+  .tab{flex:1;text-align:center;background:var(--surface2);color:var(--sub);border:1px solid var(--line);
+       border-radius:10px;padding:10px 6px;font-size:14px;cursor:pointer}
+  .tab.on{background:var(--accent);color:#0b1018;font-weight:700;border-color:var(--accent)}
+  textarea{width:100%;min-height:160px;background:#0b1018;color:#cbd5e1;border:1px solid var(--line);
+           border-radius:10px;padding:12px;font-size:12.5px;resize:vertical;
+           font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.5}
+  textarea::placeholder{color:#5a6478}
+  .ditem{background:var(--surface);border:1px solid var(--line);border-left-width:4px;
+         border-radius:10px;padding:11px 12px;margin-bottom:9px}
+  .ditem.ok{border-left-color:var(--green)}
+  .ditem.warn{border-left-color:var(--amber)}
+  .ditem.bad{border-left-color:var(--red)}
+  .ditem.info{border-left-color:#64748b}
+  .dtitle{font-size:14px;font-weight:700;line-height:1.5}
+  .dtitle .st{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;
+              margin-right:7px;font-weight:700}
+  .ditem.ok .st{background:rgba(52,211,153,.18);color:var(--green)}
+  .ditem.warn .st{background:rgba(251,191,36,.18);color:var(--amber)}
+  .ditem.bad .st{background:rgba(248,113,113,.18);color:var(--red)}
+  .ditem.info .st{background:rgba(148,163,184,.18);color:#94a3b8}
+  .dval{color:var(--sub);font-size:12.5px;margin-top:5px;word-break:break-all}
+  .dfix{font-size:12.5px;margin-top:6px;color:var(--accent)}
+  .dsum{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:14px}
+  .dsum .big{font-size:17px;font-weight:700;margin-bottom:4px}
+  .act{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:9px}
+  .act .n{font-size:14px;font-weight:700;color:var(--text)}
+  .act .why{color:var(--sub);font-size:12.5px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Root 模块引导</h1>
+  <div class="sub">按你的 su 管理器分支，生成正确的必备模块安装顺序。<br>依据《安卓 Root 使用者指南 v1.0》｜快照日 2026-10-28</div>
+
+  <div class="tabs">
+    <div class="tab on" id="tabGuide">安装引导</div>
+    <div class="tab" id="tabDiag">临时 root 诊断</div>
+  </div>
+
+  <div id="pageGuide">
+  <h2>① 你的 su 管理器分支</h2>
+  <div class="card">
+    <div style="font-size:13.5px;color:var(--sub);margin-bottom:8px">不确定？先回答两个问题，或直接下拉手动选择。</div>
+    <div class="quiz">
+      <button class="qbtn" data-q="unlock">我能解锁 BL（fastboot 可用）</button>
+      <button class="qbtn" data-q="lock">不能解锁 BL（荣耀/华为等，靠漏洞临时 root）</button>
+    </div>
+    <div id="q2" class="quiz hide" style="margin-top:10px"></div>
+  </div>
+
+  <select id="branchSelect"></select>
+  <div class="note" id="branchNote"></div>
+
+  <h2>② 安装清单</h2>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="prog" id="prog"></div>
+  <div id="steps" style="margin-top:12px"></div>
+  <button class="btn" id="reset" style="margin-top:6px">重置本分支进度</button>
+
+  <div class="foot">
+    <b>三条互斥铁律</b><br>
+    1. 一个内核只能有一套 root：Magisk / KernelSU / APatch 不能共存。<br>
+    2. 管理器与内核必须同分支同版本协议，跨分支 = 显示「未安装 / 不支持」。<br>
+    3. Zygisk 实现只能有一套：内置引擎与外挂二选一，双开会抢注入。<br><br>
+    <b>动手前</b>：先备份 A/B 双槽 init_boot、abl、GPT 并导出到电脑；一次只改一个变量，改完重启验证，出问题立刻回退。
+  </div>
+  </div><!-- /pageGuide -->
+
+  <div id="pageDiag" class="hide">
+    <h2>① 复制诊断脚本，在手机上跑一遍</h2>
+    <div class="card">
+      <div style="font-size:13.5px;color:var(--sub)">
+        脚本<b>只读</b>，不修改任何系统状态，可放心运行。两条路任选：<br>
+        <b>A（推荐）</b>：存成 <code style="display:inline;padding:1px 5px">rootdiag.sh</code> →
+        <code style="display:inline;padding:1px 5px">adb push rootdiag.sh /data/local/tmp/</code> →
+        <code style="display:inline;padding:1px 5px">adb shell "su -c 'sh /data/local/tmp/rootdiag.sh'"</code><br>
+        <b>B</b>：直接在手机上的终端 App（或管理器的终端）里粘贴执行。
+      </div>
+      <code id="diagScript"></code>
+      <div class="btns">
+        <button class="btn" id="copyScript">复制脚本</button>
+        <button class="btn" id="copyPushCmd">复制 adb 三连命令</button>
+      </div>
+      <div class="note warn" style="margin-top:12px">
+        临时 root 场景下，<b>每次开机都要重新提权</b>。诊断前先确认提权工具已跑通，否则第一步就会显示没有 root。
+      </div>
+    </div>
+
+    <h2>② 把输出整段粘回来</h2>
+    <div class="card">
+      <textarea id="diagOut" placeholder="把终端输出整段粘进来（含 =====RG-BEGIN===== 那一段）…"></textarea>
+      <div class="btns" style="margin-top:10px">
+        <button class="btn" id="btnParse">解析诊断结果</button>
+        <button class="btn" id="btnDemo">填入示例（看效果）</button>
+        <button class="btn" id="btnClear">清空</button>
+      </div>
+      <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
+        解析全部在<b>本机浏览器内</b>完成，不上传任何数据。
+      </div>
+    </div>
+
+    <div id="diagResult"></div>
+  </div>
+</div>
+
+<script>
+var BRANCHES = [
+  {id:"magisk_official", label:"Magisk 官方", fam:"magisk", meta:false, zyg:false, kpm:false, susfs:false,
+   note:"最通用、资料最多。装完第一步：设置里打开 Zygisk。Magisk 没有「元模块」概念，别装。"},
+  {id:"magisk_alpha", label:"Magisk Alpha", fam:"magisk", meta:false, zyg:false, kpm:false, susfs:false,
+   note:"官方的隐藏强化版。用法与官方一致，更新节奏不稳。"},
+  {id:"kitsune", label:"Kitsune Mask", fam:"magisk", meta:false, zyg:false, kpm:false, susfs:false,
+   note:"Magisk 的 fork，功能叠加，用法同官方。"},
+  {id:"ksu_official", label:"KernelSU 官方", fam:"ksu", meta:true, zyg:true, kpm:false, susfs:false,
+   note:"必须先装元模块，否则普通模块全部静默失效。不支持 KPM。"},
+  {id:"ksu_next", label:"KernelSU-Next", fam:"ksu", meta:false, zyg:true, kpm:false, susfs:false,
+   note:"自带挂载引擎，跳过元模块，直接装 Zygisk 实现即可。"},
+  {id:"sukisu", label:"SukiSU-Ultra", fam:"ksu", meta:false, zyg:true, kpm:true, susfs:true,
+   note:"功能最全：KPM + SUSFS（SUSFS 需内核打过补丁）。稳定性口碑一般。"},
+  {id:"bakasu", label:"BakaSU（原 ReSukiSU）", fam:"ksu", meta:true, zyg:true, kpm:true, susfs:false,
+   note:"需要元模块；支持 KPM；Tag 多为 pre-release，别追最新。"},
+  {id:"finasu", label:"FinaSU", fam:"ksu", meta:false, zyg:false, kpm:false, susfs:true,
+   note:"全家桶：内置 FolkZygisk + Sui + 挂载引擎。挂载后端保持 automatic，别内置+元模块双开；授权是白名单，不弹窗。"},
+  {id:"yukisu", label:"YukiSU", fam:"ksu", meta:true, zyg:false, kpm:false, susfs:false,
+   note:"需要元模块；内置 YukiZygisk；白名单授权模型（默认任何 App 都没有 root）。"},
+  {id:"apatch", label:"APatch", fam:"apatch", meta:false, zyg:true, kpm:true, susfs:false,
+   note:"装完第一步：设好 SuperKey（忘了进不去管理器），再装 APM 模块。支持 KPM，不支持 SUSFS。"},
+  {id:"folkpatch", label:"FolkPatch / ShiroSU", fam:"apatch", meta:false, zyg:true, kpm:true, susfs:false,
+   note:"APatch 的分支，用法同 APatch。"},
+  {id:"temp_root", label:"临时 root（漏洞提权）", fam:"temp", meta:false, zyg:false, kpm:false, susfs:false,
+   note:"分支不由你选，由漏洞链决定。模块只能靠 ksud soft-reboot 挂载，物理重启即归零；不能改物理分区。"}
+];
+
+function S(id,title,desc,req,url,cmd,verify,warn){
+  return {id:id,title:title,desc:desc,req:req,url:url,cmd:cmd,verify:verify,warn:warn};
+}
+
+function metaStep(){
+  return S("meta_module","元模块 meta-overlayfs（必装）",
+    "给 KernelSU 提供模块挂载能力。官方 KernelSU / BakaSU / YukiSU 不装它，所有普通模块装了也完全不生效。",
+    true,"https://github.com/tiann/KernelSU",
+    "su -c \"ksud module install /sdcard/Download/meta-overlayfs.zip\"",
+    "su -c \"ksud module list\" 能看到元模块且为启用",
+    "KSU-Next / SukiSU / FinaSU / Magisk / APatch 都不需要它，别重复装");
+}
+function zygStep(){
+  return S("zygisk_impl","Zygisk 实现：Zygisk Next 或 ReZygisk（必装）",
+    "为 zygote 提供注入能力，Vector / Xposed 模块与 Zygisk 模块都依赖它。与内置引擎二选一，不能双开。",
+    true,"https://github.com/Dr-TSNG/ZygiskNext",
+    "su -c \"ksud module install /sdcard/Download/zygisknext.zip\"",
+    "装一个 Zygisk 模块能正常启停即通",
+    "FinaSU / YukiSU 已内置引擎，装外部实现前先关掉内置的");
+}
+function vectorStep(){
+  return S("vector","Vector（Xposed 框架，需要时才装）",
+    "原版 LSPosed 已于 2023-10 停更，Vector 是继任者。装完要在里面勾选模块与作用域，并强停目标 App。",
+    false,"https://github.com/JingMatrix/Vector",null,null,
+    "软重启环境下 Vector 可能双 daemon：禁用 → 软重启 → 启用 → 再软重启一次");
+}
+function hostsStep(){
+  return S("hosts","systemless hosts + AdAway（去广告，可选）",
+    "Magisk 有内置 Systemless hosts 开关，不必另装模块；KSU 系装 hosts 模块后再装 AdAway。",
+    false,"https://github.com/AdAway/AdAway",null,
+    "cat /system/etc/hosts 里出现大量 0.0.0.0 条目",null);
+}
+function hmaStep(){
+  return S("hma","Hide My Applist（防应用列表枚举，可选）",
+    "阻止 App 通过列出已安装应用来判定环境。银行/支付类 App 排查到这一步才用。",
+    false,"https://github.com/Dr-TSNG/Hide-My-Applist",null,null,null);
+}
+
+function build(b){
+  var steps=[];
+  if(b.fam==="temp"){
+    steps.push(S("backup","⓪ 先备份，零风险、不可跳过",
+      "备份 A/B 双槽 init_boot、abl、GPT 分区表与 SHA-256，并导出到电脑。这是后面所有操作的唯一回滚素材。",
+      true,null,null,
+      "Download/ublbackup_yyyyMMdd_HHmmss 存在，且已复制到电脑",
+      "解锁流程会清空数据；没有备份就不要往下走"));
+    steps.push(S("temp_verify","① 提权后先确认内核里的 root 还在",
+      "每次开机都要重新提权。先确认 ksud 与内核模块存在，再谈装模块。",
+      true,null,"su -c \"ksud -V\" && su -c \"lsmod | grep -i kernelsu\"",
+      "两条命令都有输出才继续；否则回到提权工具重新提权",null));
+    steps.push(metaStep());
+    steps.push(zygStep());
+    steps.push(S("temp_softreboot","② 用软重启重放开机阶段（唯一能让模块生效的方式）",
+      "模块挂载发生在开机阶段。物理重启后内核回到原厂、root 消失，挂载永远不会发生；软重启只重启框架、不重载内核，因此 root 还在、模块能挂上。",
+      true,null,"su -c \"ksud soft-reboot\"",
+      "su -c \"cat /proc/mounts | grep -i overlay\" 有输出即挂载成功",
+      "老版本 ksud 的软重启不重放 post-fs-data，那种构建无解；每次开机都要重来一遍"));
+    steps.push(vectorStep());
+    steps.push(hostsStep());
+    steps.push(hmaStep());
+    return steps;
+  }
+  if(b.id==="finasu"){
+    steps.push(S("finasu_mount","① 确认挂载后端（最容易错的一步）",
+      "可选值：automatic / built-in (Folk-Mount) / metamodule only / NoMount / off。保持默认 automatic 即可。",
+      true,null,null,"设置页若显示回退说明，属设计行为不是 bug",
+      "绝对不要「内置引擎 + 外部元模块」双开，挂载冲突会卡启动"));
+    steps.push(S("finasu_whitelist","② 把需要 root 的 App 加进白名单",
+      "FinaSU 是白名单授权模型，默认任何 App 都没有 root，也不会弹授权窗。",
+      true,null,null,null,
+      "这是「root 明明装了但 App 说没权限」的第一大原因"));
+  }
+  if(b.id==="apatch"||b.id==="folkpatch"){
+    steps.push(S("apatch_superkey","① 设置并记住 SuperKey",
+      "APatch 用 SuperKey 认证管理器。忘了 SuperKey 等于管理器进不去。",
+      true,null,null,null,"SuperKey 丢失后只能重新修补 boot"));
+  }
+  if(b.fam==="magisk"){
+    steps.push(S("magisk_zygisk","① 打开 Zygisk 开关",
+      "Magisk 设置 → 开启 Zygisk → 重启。Magisk 自带注入与挂载能力，不需要任何元模块。",
+      true,null,null,"重启后设置页 Zygisk 显示为开启",
+      "隐藏类模块注意：Shamiko 已停更，改用 Zygisk Assistant"));
+  }
+  if(b.meta) steps.push(metaStep());
+  if(b.zyg) steps.push(zygStep());
+  steps.push(S("reboot_verify","重启并验证基础层已生效",
+    "每装完一层就重启一次（临时 root 用软重启），确认没问题再装下一层，不要一次性全装。",
+    true,null,"su -c \"ksud module list\"",
+    "模块状态为启用；su -c \"cat /proc/mounts | grep -i overlay\" 有输出",null));
+  steps.push(S("zygisk_assistant","Zygisk Assistant（隐藏，可选）",
+    "强化 DenyList：让目标 App 看不到注入痕迹。适用于银行/支付类 App。",
+    false,"https://github.com/snake-4/Zygisk-Assistant",null,
+    "目标 App 能启动且不弹 root 提示",
+    "用它时要关掉 Magisk 的 Enforce DenyList，由它自己读列表"));
+  steps.push(S("pif","PlayIntegrityFork（完整性，可选）",
+    "原版 PlayIntegrityFix 已下架，用 Fork 版。解决 Play 商店/银行提示设备不合规。",
+    false,"https://github.com/osm0sis/PlayIntegrityFork",null,
+    "Play Integrity API Checker：BASIC ✅ / DEVICE ✅ 即达正常上限",
+    "不要追求 STRONG：它依赖未被吊销的硬件 keybox，解锁 BL 后基本拿不到"));
+  steps.push(S("tricky_store","Tricky Store（可选，前一项仍不过时才加）",
+    "只在 DEVICE 级仍不过时才加。每加一个变量都要重启 + 复测。",
+    false,"https://github.com/5ec1cff/TrickyStore",null,null,null));
+  steps.push(hmaStep());
+  steps.push(vectorStep());
+  steps.push(hostsStep());
+  steps.push(S("gms_doze","Universal GMS Doze（省电，可选）",
+    "抑制 GMS 唤醒。少数机型会因此收不到推送，装完观察一天。",
+    false,null,null,null,null));
+  if(b.kpm){
+    steps.push(S("kpm","KPM 内核模块（高级，可选）",
+      "运行时加载内核模块，做内核级 hook。需要内核开启 CONFIG_KPM。",
+      false,null,null,"lsmod 能看到已加载的模块",
+      "内核模块搞错 = 不开机。刷之前一定备份 boot / init_boot"));
+  }
+  if(b.susfs){
+    steps.push(S("susfs","SUSFS 内核级隐藏（高级，可选）",
+      "在内核里抹掉痕迹：SUS_PATH / SUS_MOUNT / SUS_KSTAT / SPOOF_UNAME。",
+      false,"https://gitlab.com/simonpunk/susfs4ksu",null,null,
+      "内核必须打过 SUSFS 补丁，且 KMI 精确匹配；刷进没打补丁的内核会破坏 key attestation，比不装更糟"));
+  }
+  return steps;
+}
+
+var Q2_OPTIONS = {
+  unlock:[
+    {label:"最省心 / 资料最多", id:"magisk_official"},
+    {label:"内核级 + 想少管事", id:"ksu_next"},
+    {label:"要 KPM 内核模块", id:"sukisu"},
+    {label:"想一次装完（全家桶）", id:"finasu"}
+  ],
+  lock:[
+    {label:"靠漏洞提权的临时 root", id:"temp_root"}
+  ]
+};
+
+var sel=document.getElementById("branchSelect");
+var note=document.getElementById("branchNote");
+var wrap=document.getElementById("steps");
+var bar=document.getElementById("bar");
+var prog=document.getElementById("prog");
+var q2=document.getElementById("q2");
+var current=null;
+
+BRANCHES.forEach(function(b,i){
+  var o=document.createElement("option");
+  o.value=b.id; o.textContent=b.label;
+  sel.appendChild(o);
+});
+
+function keyDone(id){ return "rg_done_"+id; }
+
+function loadDone(id){
+  try{ return JSON.parse(localStorage.getItem(keyDone(id))||"[]"); }catch(e){ return []; }
+}
+function saveDone(id,arr){
+  try{ localStorage.setItem(keyDone(id),JSON.stringify(arr)); }catch(e){}
+}
+
+function esc(s){
+  return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function render(){
+  var b=current;
+  note.textContent=b.note;
+  localStorage.setItem("rg_branch",b.id);
+  var done=loadDone(b.id);
+  var steps=build(b);
+  var html="";
+  steps.forEach(function(s,i){
+    var isDone=done.indexOf(s.id)>=0;
+    html+='<div class="step'+(isDone?" done":"")+'" data-id="'+s.id+'">'
+      +'<div class="shead">'
+      +'<input type="checkbox" '+(isDone?"checked":"")+' data-id="'+s.id+'">'
+      +'<div class="stitle">'+esc(s.title)+'</div>'
+      +'<span class="chip '+(s.req?"req":"opt")+'">'+(s.req?"必装":"可选")+'</span>'
+      +'</div>'
+      +'<div class="sdesc">'+esc(s.desc)+'</div>'
+      +(s.verify?'<div class="sverify">验证：'+esc(s.verify)+'</div>':'')
+      +(s.warn?'<div class="swarn">⚠ '+esc(s.warn)+'</div>':'')
+      +(s.cmd?'<code>'+esc(s.cmd)+'</code>':'')
+      +'<div class="btns">'
+      +(s.url?'<a class="btn" target="_blank" rel="noopener" href="'+s.url+'">打开下载页</a>':'')
+      +(s.cmd?'<button class="btn" data-copy="'+esc(s.cmd).replace(/"/g,"&quot;")+'">复制命令</button>':'')
+      +'</div></div>';
+  });
+  wrap.innerHTML=html;
+  updateBar(steps,done);
+
+  wrap.querySelectorAll("input[type=checkbox]").forEach(function(cb){
+    cb.addEventListener("change",function(){
+      var arr=loadDone(b.id);
+      var i=arr.indexOf(cb.dataset.id);
+      if(cb.checked && i<0) arr.push(cb.dataset.id);
+      if(!cb.checked && i>=0) arr.splice(i,1);
+      saveDone(b.id,arr);
+      var card=cb.closest(".step");
+      if(card) card.classList.toggle("done",cb.checked);
+      updateBar(steps,loadDone(b.id));
+    });
+  });
+  wrap.querySelectorAll("button[data-copy]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var text=btn.getAttribute("data-copy");
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text);
+      }else{
+        var ta=document.createElement("textarea");
+        ta.value=text; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta);
+      }
+      var old=btn.textContent; btn.textContent="已复制";
+      setTimeout(function(){ btn.textContent=old; },1200);
+    });
+  });
+}
+
+function updateBar(steps,done){
+  var total=steps.length;
+  var n=steps.filter(function(s){return done.indexOf(s.id)>=0;}).length;
+  var reqLeft=steps.filter(function(s){return s.req && done.indexOf(s.id)<0;}).length;
+  bar.style.width=(total? (n/total*100):0)+"%";
+  prog.textContent="已完成 "+n+" / "+total+" ｜ 必装剩余 "+reqLeft;
+}
+
+function selectBranch(id){
+  current=BRANCHES.filter(function(b){return b.id===id;})[0]||BRANCHES[0];
+  sel.value=current.id;
+  render();
+}
+
+sel.addEventListener("change",function(){ selectBranch(sel.value); });
+
+document.querySelectorAll(".qbtn[data-q]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var opts=Q2_OPTIONS[btn.dataset.q]||[];
+    q2.innerHTML="";
+    opts.forEach(function(o){
+      var b2=document.createElement("button");
+      b2.className="qbtn"; b2.textContent="→ "+o.label;
+      b2.addEventListener("click",function(){ selectBranch(o.id); });
+      q2.appendChild(b2);
+    });
+    q2.classList.remove("hide");
+  });
+});
+
+document.getElementById("reset").addEventListener("click",function(){
+  if(!current) return;
+  saveDone(current.id,[]);
+  render();
+});
+
+var saved=localStorage.getItem("rg_branch");
+selectBranch(saved||"ksu_official");
+
+/* ================= 临时 root 一键诊断 ================= */
+
+var DIAG_SCRIPT = [
+'#!/system/bin/sh',
+'# RootGuide 只读诊断脚本 v1.0 —— 只读，不修改任何系统状态，可放心运行',
+'# 用法：adb push rootdiag.sh /data/local/tmp/ && adb shell "su -c \'sh /data/local/tmp/rootdiag.sh\'"',
+'echo "=====RG-BEGIN====="',
+'p(){ echo "RG|$1|$2"; }',
+'p uid "$(id -u 2>/dev/null)"',
+'if [ -d /data/adb/ksu ]; then p fam ksu; else if [ -d /data/adb/magisk ]; then p fam magisk; else if [ -d /data/adb/ap ]; then p fam apatch; else p fam unknown; fi; fi; fi',
+'p ksud "$(ksud -V 2>/dev/null | head -1)"',
+'p magisk "$(magisk -V 2>/dev/null | head -1)"',
+'p kmod "$(lsmod 2>/dev/null | grep -c -e kernelsu -e kpatch)"',
+'p vbmeta "$(getprop ro.boot.vbmeta.device_state)"',
+'p kmi "$(uname -r)"',
+'p selinux "$(getenforce 2>/dev/null)"',
+'p moddir "$(ls -d /data/adb/modules 2>/dev/null)"',
+'p modcount "$(ls /data/adb/modules 2>/dev/null | grep -c .)"',
+'p modlist "$(ls /data/adb/modules 2>/dev/null | tr \'\\n\' \',\')"',
+'p meta "$(ls /data/adb/modules 2>/dev/null | grep -c -i -e meta -e mountify)"',
+'p zygisk "$(ls /data/adb/modules 2>/dev/null | grep -c -i -e zygisk -e rezygisk -e neozygisk)"',
+'p lsposed "$(ls /data/adb/modules 2>/dev/null | grep -c -i -e vector -e lsposed -e jingmatrix)"',
+'p overlay "$(grep -c overlay /proc/mounts)"',
+'p susfs "$(command -v ksu_susfs >/dev/null 2>&1 && echo yes || echo no)"',
+'p softreboot "$(ksud 2>&1 | grep -c -e soft.reboot)"',
+'p ksudhelp "$(ksud 2>&1 | tr \'\\n\' \';\' | head -c 600)"',
+'p folkzygisk "$([ -e /data/adb/ksu/bin/folkzygisk ] && echo yes || echo no)"',
+'p folksusfs "$([ -d /data/adb/ksu/folksu-susfs ] && echo yes || echo no)"',
+'p suidir "$([ -d /data/adb/sui ] && echo yes || echo no)"',
+'p mountmode "$(cat /data/adb/ksu/mount_mode 2>/dev/null)"',
+'p mountprovider "$(sed -n "s/^provider=//p" /data/adb/ksu/mount_runtime 2>/dev/null)"',
+'p vboot "$(getprop ro.boot.verifiedbootstate)"',
+'p persistent "$([ -f /data/adb/ksud ] && echo yes || echo no)"',
+'p writable "$([ -w /data/adb/modules ] && echo yes || echo no)"',
+'p android "$(getprop ro.build.version.release)"',
+'p device "$(getprop ro.product.device)"',
+'echo "=====RG-END====="',
+''].join("\n");
+
+var DIAG_PUSH_CMD = 'adb push rootdiag.sh /data/local/tmp/ && adb shell "su -c \'sh /data/local/tmp/rootdiag.sh\'"';
+
+/* 判定表：eval(v, r) 返回 {s: ok|warn|bad|info, m: 结论文字} */
+var CHECKS = [
+ {k:"uid", t:"root 权限",
+  eval:function(v){ return v==="0"
+    ? {s:"ok", m:"已拿到 UID 0，su 通道是通的"}
+    : {s:"bad", m:"没有 root。后面的结果都不作数，先解决提权"}; },
+  fix:"回到提权工具重新提权；若 su 有输出但 App 说没权限，FinaSU / YukiSU 是白名单模型，要把 App 手动加进白名单"},
+
+ {k:"fam", t:"root 体系",
+  eval:function(v){ var map={ksu:"KernelSU 系",magisk:"Magisk 系",apatch:"APatch 系"};
+    return map[v] ? {s:"ok", m:"检测到 /data/adb/"+v+" → "+map[v]}
+    : {s:"bad", m:"unknown：/data/adb 下没有 ksu / magisk / ap 目录，提权链大概率没跑通"}; },
+  fix:"重新跑提权工具；仍为 unknown 说明这套 root 不走 /data/adb，本引导的模块路径对它不适用"},
+
+ {k:"manager", t:"su 管理器分支", always:true,
+  eval:function(v,r){ var g=detectBranch(r); var b=branchById(g.id);
+    if(g.conf==="high") return {s:"ok", m:"自动识别为 "+(b?b.label:g.id)+"。依据："+(g.evidences[0]||"—")};
+    if(g.conf==="medium") return {s:"warn", m:"疑似 "+(b?b.label:g.id)+"，证据较弱："+g.evidences.join("；")+"。请手动核对"};
+    return {s:"warn", m:"认不出具体分支。KernelSU 系各分支没有统一的标记文件，请在上方「你的分支」处手动选择"}; },
+  fix:"分支选错会让 meta / zygisk 等判定全部反向：把 FinaSU 当成官方 KernelSU，就会被指引去装元模块，而 FinaSU 装元模块 = 双挂载"},
+
+ {k:"ksud", t:"ksud 版本",
+  eval:function(v,r){ if(v) return {s:"ok", m:"ksud 可用，版本串 "+v};
+    return r.fam==="ksu"
+      ? {s:"bad", m:"体系是 KSU 但 ksud 不存在：内核部分没起来"}
+      : {s:"info", m:"未检测到 ksud（Magisk / APatch 体系没有它，属正常）"}; }},
+
+ {k:"magisk", t:"magisk 版本",
+  eval:function(v,r){ if(v) return {s:"ok", m:"magisk 可用： "+v};
+    return r.fam==="magisk" ? {s:"bad", m:"体系是 Magisk 但 magisk 命令不可用"} : {s:"info", m:"非 Magisk 体系，无 magisk 命令"}; }},
+
+ {k:"kmod", t:"内核模块是否加载",
+  eval:function(v){ var n=parseInt(v,10)||0;
+    return n>0 ? {s:"ok", m:"lsmod 里有 "+n+" 条 kernelsu / kpatch，内核里确实有东西"}
+    : {s:"warn", m:"lsmod 里没看到 kernelsu / kpatch。临时 root 若靠 LKM 注入这里应为 1；为 0 时软重启后 root 可能丢失"}; },
+  fix:"补一次 ksud -V 与 su -c id 交叉验证；若两者都正常但 lsmod 为 0，可能是 lsmod 输出被裁剪，不必纠结"},
+
+ {k:"vbmeta", t:"bootloader 状态",
+  /* locked 不能当作「临时 root」的判据：真机（荣耀 8E5 / FinaSU 1.3.0）实测
+     vbmeta=locked + verifiedbootstate=green + /data/adb/ksud 持久化存在，
+     其实是 hnubl 的假回锁，属于完整永久 root。 */
+  eval:function(v,r){
+    var fakeLock = (v==="locked" && r.vboot==="green" && r.persistent==="yes");
+    if(fakeLock) return {s:"ok", m:"vbmeta=locked 但 verifiedbootstate=green 且有持久化 ksud → 假回锁：BL 实际已解锁、只是属性被隐藏。这是永久 root，不是临时 root"};
+    if(v==="locked") return {s:"warn", m:"vbmeta=locked（verifiedbootstate="+(r.vboot||"?")+"）。既然已 root，说明解锁链路是通的；是否伪装看 verifiedbootstate"};
+    if(v==="unlocked") return {s:"ok", m:"unlocked —— 常规刷写流程"};
+    return {s:"info", m:"读不到 vbmeta 状态（有些机型不暴露这个属性）"}; },
+  fix:"锁定属性下不要动物理分区：AVB 校验失败 = 硬砖"},
+
+ {k:"kmi", t:"内核 KMI",
+  eval:function(v){ return /android\d+/.test(v)
+    ? {s:"ok", m:v+"（形如 android16-6.12，SUSFS / LKM 必须按它精确匹配）"}
+    : {s:"info", m:v+"（不含 android 前缀，可能不是 GKI 内核）"}; }},
+
+ {k:"selinux", t:"SELinux",
+  eval:function(v){ return v==="Enforcing" ? {s:"ok", m:"Enforcing，正常"}
+    : v==="Permissive" ? {s:"warn", m:"Permissive —— 有模块把它关了"} : {s:"info", m:v||"读不到"}; },
+  fix:"要求 setenforce 0 才能工作的模块都要打问号。逐个禁用排查，找出关 SELinux 的那个"},
+
+ {k:"moddir", t:"模块目录",
+  eval:function(v){ return v ? {s:"ok", m:v+" 存在"}
+    : {s:"bad", m:"/data/adb/modules 不存在：root 不完整或挂载未就绪"}; }},
+
+ {k:"writable", t:"模块目录可写",
+  eval:function(v){ return v==="yes" ? {s:"ok", m:"可写，能装模块"}
+    : {s:"bad", m:"不可写：/data/adb 权限异常，安装一定会失败"}; },
+  fix:"先 su -c 'ls -ld /data/adb /data/adb/modules' 看属主；临时 root 下常见的是提权不完整"},
+
+ {k:"modcount", t:"已装模块数",
+  eval:function(v){ return {s:"info", m:(parseInt(v,10)||0)+" 个（文件在 /data/adb/modules，重启不会丢，丢的是挂载状态）"}; }},
+
+ {k:"modlist", t:"模块清单",
+  eval:function(v){ return v ? {s:"info", m:v.replace(/,\s*$/,"")} : {s:"info", m:"（空）"}; }},
+
+ {k:"meta", t:"元模块（挂载能力）",
+  eval:function(v,r){ var n=parseInt(v,10)||0; var b=branchById(r.__branch);
+    if(!b || !b.meta) return {s:"info", m:n>0?("检测到 "+n+" 个 meta/mountify 类模块（当前分支 "+(b?b.label:"")+" 其实不需要它）"):"未装元模块 —— 当前分支不需要"};
+    return n>0 ? {s:"ok", m:"已装 "+n+" 个元模块，挂载能力就绪"}
+    : {s:"bad", m:"当前分支（"+b.label+"）必须先装元模块，否则所有普通模块装了也完全不生效"}; },
+  fix:"su -c \"ksud module install /sdcard/Download/meta-overlayfs.zip\" 然后软重启"},
+
+ {k:"zygisk", t:"Zygisk 实现",
+  eval:function(v,r){ var n=parseInt(v,10)||0; var b=branchById(r.__branch);
+    if(!b || !b.zyg) return {s:"info", m:n>0?("检测到 "+n+" 个 Zygisk 类模块（"+b.label+" 内置引擎，别外部再装）"):"未装外部 Zygisk 实现 —— 当前分支内置引擎"};
+    return n>0 ? {s:"ok", m:"已装 "+n+" 个 Zygisk 实现，注入层就绪"}
+    : {s:"bad", m:"当前分支（"+b.label+"）需要外部 Zygisk 实现，没有它 Vector / Xposed 模块全部无效"}; },
+  fix:"su -c \"ksud module install /sdcard/Download/zygisksu.zip\" 然后软重启。注意：内置引擎与外挂只能二选一"},
+
+ {k:"lsposed", t:"Xposed 框架",
+  eval:function(v){ var n=parseInt(v,10)||0;
+    return n>0 ? {s:"ok", m:"已装 "+n+" 个（Vector / LSPosed 类）"} : {s:"info", m:"未装 Xposed 框架（不需要 hook 就不用装）"}; },
+  fix:"软重启环境下 Vector 可能双 daemon：禁用 → 软重启 → 启用 → 再软重启一次"},
+
+ {k:"overlay", t:"模块挂载是否生效",
+  eval:function(v){ var n=parseInt(v,10)||0;
+    return n>0 ? {s:"ok", m:"/proc/mounts 里有 "+n+" 条 overlay，模块确实挂上了"}
+    : {s:"bad", m:"没有任何 overlay 挂载 —— 这就是「装了但不生效」的直接证据"}; },
+  fix:"临时 root 下执行 su -c \"ksud soft-reboot\" 重放开机阶段，然后再跑一次本诊断比对这一项"},
+
+ {k:"softreboot", t:"ksud 软重启支持",
+  eval:function(v,r){ var n=parseInt(v,10)||0;
+    if(n>0) return {s:"ok", m:"ksud 支持 soft-reboot —— 需要绕过物理重启时这条路是通的"};
+    return r.persistent==="no"
+      ? {s:"bad", m:"这个 ksud 不支持软重启，且没有持久化安装痕迹（/data/adb/ksud 缺失）→ 若属临时 root，模块永远挂不上"}
+      : {s:"warn", m:"ksud 帮助里没找到 soft-reboot（也可能只是输出格式不同）"}; }},
+
+ {k:"susfs", t:"SUSFS",
+  eval:function(v){ return v==="yes" ? {s:"ok", m:"ksu_susfs 可用，内核打过 SUSFS 补丁"}
+    : {s:"info", m:"未启用 SUSFS（可选；需要内核打过补丁且 KMI 精确匹配）"}; }},
+
+ {k:"android", t:"Android 版本", eval:function(v){ return {s:"info", m:v||"—"}; }},
+ {k:"device", t:"设备代号", eval:function(v){ return {s:"info", m:v||"—"}; }}
+];
+
+function branchById(id){ return BRANCHES.filter(function(b){ return b.id===id; })[0] || null; }
+
+/* 从真机状态反推具体 su 管理器分支。
+   只在证据确凿时下结论：不同分支的 meta / zyg 取值可能完全相反，猜错一个，
+   用户就会被指引去装不该装的东西（FinaSU 装元模块 = 双挂载）。
+   证据不足就返回 conf:"none"，让 UI 提示手动选择，而不是塞一个「最像」的默认值。
+   判据只用管理器自己铺的系统文件，不依赖用户装了什么模块。 */
+function detectBranch(r){
+  var strong=[], weak=[];
+  var help=String(r.ksudhelp||""), ver=String(r.ksud||"");
+  var mods=String(r.modlist||"").split(",").map(function(s){return s.trim();}).filter(Boolean);
+  if(r.folkzygisk==="yes") strong.push("/data/adb/ksu/bin/folkzygisk 存在（内置 FolkZygisk）");
+  if(help.indexOf("FolkZygisk")>=0) strong.push("ksud 命令列表含 FolkZygisk");
+  if(help.indexOf("Sui")>=0) strong.push("ksud 命令列表含内置 Sui 命令");
+  if(r.folksusfs==="yes") strong.push("/data/adb/ksu/folksu-susfs 存在");
+  if(r.suidir==="yes") weak.push("/data/adb/sui 存在（内置 Sui 扩展）");
+  if(ver.indexOf("uapi")>=0) weak.push("ksud 版本串含 uapi："+ver);
+  if(mods.some(function(m){ return m.indexOf("finasu")===0; })) weak.push("已装 finasu-* 模块");
+  if(strong.length) return {id:"finasu", conf:"high", evidences:strong.concat(weak)};
+  if(weak.length>=2) return {id:"finasu", conf:"medium", evidences:weak};
+  return {id:null, conf:"none", evidences:weak};
+}
+
+function parseDiag(text){
+  var r={}, lines=String(text||"").split(/\r?\n/);
+  lines.forEach(function(l){
+    var m=l.match(/RG\|([a-z_]+)\|(.*)$/);
+    if(m) r[m[1]]=m[2].trim();
+  });
+  return r;
+}
+
+function renderDiag(raw){
+  var out=document.getElementById("diagResult");
+  var r=parseDiag(raw);
+  var keys=Object.keys(r);
+  if(!keys.length){
+    out.innerHTML='<div class="note warn">没解析到任何 <code style="display:inline;padding:1px 5px">RG|key|value</code> 行。确认粘贴的是脚本<b>完整输出</b>（含 BEGIN/END 之间的部分），而不是只粘了 adb 的报错。</div>';
+    return;
+  }
+  var b=current||BRANCHES[0];
+  r.__branch=b.id;
+
+  var items=[], bad=0, warn=0;
+  CHECKS.forEach(function(c){
+    if(r[c.k]===undefined && !c.always) return;
+    var res=c.eval(r[c.k], r)||{s:"info",m:r[c.k]};
+    if(res.s==="bad") bad++;
+    if(res.s==="warn") warn++;
+    items.push({c:c, res:res, v:r[c.k]});
+  });
+
+  var head = bad? {t:"有 "+bad+" 项阻断问题", cls:"var(--red)"}
+            : warn? {t:"基本正常，有 "+warn+" 项提示", cls:"var(--amber)"}
+            : {t:"全部检查通过", cls:"var(--green)"};
+
+  var html='<div class="dsum"><div class="big" style="color:'+head.cls+'">'+head.t+'</div>'
+    +'<div style="color:var(--sub);font-size:12.5px;margin-top:4px">判定依据分支：<b style="color:var(--text)">'+esc(b.label)+'</b>'
+    +' ｜ '+esc(r.device||"")+' Android '+esc(r.android||"")+' ｜ '+esc(r.kmi||"")
+    +' <button class="btn" id="goBranch" style="padding:3px 9px;font-size:12px;margin-left:6px">切换分支</button></div></div>';
+
+  items.forEach(function(it){
+    var st={ok:"✅ 通过",warn:"⚠ 注意",bad:"❌ 阻断",info:"ℹ 信息"}[it.res.s];
+    html+='<div class="ditem '+it.res.s+'">'
+      +'<div class="dtitle"><span class="st">'+st+'</span>'+esc(it.c.t)+'</div>'
+      +'<div class="dval">'+esc(it.res.m)+(it.v?(' <span style="color:#5a6478">[原始值: '+esc(it.v)+']</span>'):'')+'</div>'
+      +(it.c.fix?'<div class="dfix">→ '+esc(it.c.fix)+'</div>':'')
+      +'</div>';
+  });
+
+  /* 依据结果生成「下一步」 */
+  var acts=[];
+  function num(v){ return parseInt(v,10)||0; }
+  if(r.uid!=="0"){
+    acts.push({n:"先完成提权", why:"没有 UID 0，后面所有结论都不成立。", cmd:null});
+  }
+  /* 不再用 vbmeta=locked 推断临时 root：假回锁会把这一类用户 100% 误判 */
+  var noPersist = (r.persistent==="no");
+  var needNewBuild = (noPersist && r.softreboot!==undefined && num(r.softreboot)===0 && r.uid==="0");
+  if(needNewBuild){
+    acts.push({n:"换一个支持 soft-reboot 的 ksud 构建",
+      why:"没有持久化安装痕迹，且这个 ksud 不支持软重启 = 模块永远挂不上。这是硬限制，不是配置问题。",
+      cmd:"su -c \"ksud -V\""});
+  }
+  if(r.writable==="no"){
+    acts.push({n:"修复 /data/adb 权限", why:"模块目录不可写，安装必然失败。",
+      cmd:"su -c \"ls -ld /data/adb /data/adb/modules\""});
+  }
+  if(b.meta && num(r.meta)===0 && r.uid==="0"){
+    acts.push({n:"装元模块 meta-overlayfs", why:"当前分支"+b.label+"不装它，所有普通模块装了也完全不生效。",
+      cmd:"su -c \"ksud module install /sdcard/Download/meta-overlayfs.zip\""});
+  }
+  if(b.zyg && num(r.zygisk)===0 && r.uid==="0"){
+    acts.push({n:"装 Zygisk 实现", why:"没有注入层，Vector / Xposed 模块全部无效。",
+      cmd:"su -c \"ksud module install /sdcard/Download/zygisksu.zip\""});
+  }
+  if(r.uid==="0" && num(r.overlay)===0 && !needNewBuild){
+    acts.push(noPersist
+      ? {n:"执行软重启，重放开机阶段",
+         why:"检测到没有持久化安装痕迹（/data/adb/ksud 缺失），优先用软重启在保留 root 的前提下重放开机阶段，避免物理重启把 root 清掉。",
+         cmd:"su -c \"ksud soft-reboot\""}
+      : {n:"重启一次，让模块挂载生效",
+         why:"已确认是持久化安装，走正常重启即可；模块挂载发生在开机阶段，不重启永远不会发生。",
+         cmd:"su -c \"reboot\""});
+  }
+  if(r.selinux==="Permissive"){
+    acts.push({n:"找出把 SELinux 改成 Permissive 的模块", why:"正规做法是加载修补 sepolicy，不是关掉强制模式。", cmd:null});
+  }
+  if(num(r.overlay)>0 && r.uid==="0" && (!b.meta||num(r.meta)>0) && (!b.zyg||num(r.zygisk)>0)){
+    acts.push({n:"基础层已就绪，可以装功能层了",
+      why:"去「安装引导」页按清单继续：Zygisk Assistant / PlayIntegrityFork / Vector / hosts。每装一个就重测一次。", cmd:null});
+  }
+
+  if(acts.length){
+    html+='<h2>③ 下一步该做什么（按此顺序）</h2>';
+    acts.forEach(function(a,i){
+      html+='<div class="act"><div class="n">'+(i+1)+'. '+esc(a.n)+'</div>'
+        +'<div class="why">'+esc(a.why)+'</div>'
+        +(a.cmd?'<code>'+esc(a.cmd)+'</code><div class="btns"><button class="btn" data-copy="'+esc(a.cmd).replace(/"/g,"&quot;")+'">复制命令</button></div>':'')
+        +'</div>';
+    });
+  }
+  html+='<div class="note" style="margin-top:14px">改完任何一项后，<b>再跑一次诊断脚本并重新粘贴</b>，重点比对「模块挂载是否生效」这一项。<code>su -c "ksud soft-reboot"</code></div>';
+
+  out.innerHTML=html;
+
+  var gb=document.getElementById("goBranch");
+  if(gb) gb.addEventListener("click",function(){ switchTab("guide"); });
+  out.querySelectorAll("button[data-copy]").forEach(function(btn){
+    btn.addEventListener("click",function(){ copyText(btn.getAttribute("data-copy"), btn); });
+  });
+}
+
+function copyText(text, btn){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text);
+  }else{
+    var ta=document.createElement("textarea");
+    ta.value=text; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+  }
+  if(btn){ var old=btn.textContent; btn.textContent="已复制"; setTimeout(function(){ btn.textContent=old; },1200); }
+}
+
+var DEMO_OUT = [
+"=====RG-BEGIN=====",
+"RG|uid|0",
+"RG|fam|ksu",
+"RG|ksud|32601",
+"RG|kmod|1",
+"RG|vbmeta|locked",
+"RG|kmi|6.12.58-android16-8-g3a7ac1674240-abogki541502914-4k",
+"RG|selinux|Enforcing",
+"RG|moddir|/data/adb/modules",
+"RG|writable|yes",
+"RG|modcount|2",
+"RG|modlist|meta-overlayfs,zygisksu,",
+"RG|meta|1",
+"RG|zygisk|1",
+"RG|lsposed|0",
+"RG|overlay|0",
+"RG|susfs|no",
+"RG|softreboot|1",
+"RG|android|16",
+"RG|device|abogki541502914",
+"=====RG-END====="].join("\n");
+
+/* tab 切换 */
+var tabGuide=document.getElementById("tabGuide");
+var tabDiag=document.getElementById("tabDiag");
+var pgGuide=document.getElementById("pageGuide");
+var pgDiag=document.getElementById("pageDiag");
+
+function switchTab(which){
+  var isGuide = which!=="diag";
+  tabGuide.classList.toggle("on", isGuide);
+  tabDiag.classList.toggle("on", !isGuide);
+  pgGuide.classList.toggle("hide", !isGuide);
+  pgDiag.classList.toggle("hide", isGuide);
+  window.scrollTo(0,0);
+}
+tabGuide.addEventListener("click",function(){ switchTab("guide"); });
+tabDiag.addEventListener("click",function(){ switchTab("diag"); });
+
+document.getElementById("diagScript").textContent=DIAG_SCRIPT;
+document.getElementById("copyScript").addEventListener("click",function(){ copyText(DIAG_SCRIPT,this); });
+document.getElementById("copyPushCmd").addEventListener("click",function(){ copyText(DIAG_PUSH_CMD,this); });
+document.getElementById("btnParse").addEventListener("click",function(){ renderDiag(document.getElementById("diagOut").value); });
+document.getElementById("btnDemo").addEventListener("click",function(){
+  document.getElementById("diagOut").value=DEMO_OUT;
+  renderDiag(DEMO_OUT);
+});
+document.getElementById("btnClear").addEventListener("click",function(){
+  document.getElementById("diagOut").value="";
+  document.getElementById("diagResult").innerHTML="";
+});
+</script>
+</body>
+</html>

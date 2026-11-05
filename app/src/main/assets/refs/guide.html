@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>安卓 Root 使用者指南（实操版）</title>
+<style>
+:root{
+  --bg:#0b0f14; --bg2:#121821; --fg:#e6edf3; --dim:#9aa7b4;
+  --line:#233040; --accent:#ff7a9a; --accent2:#5ac8fa;
+  --code-bg:#0f1620; --ok:#3fb950; --warn:#d29922; --bad:#f85149;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:16px/1.75 -apple-system,"SF Pro SC","PingFang SC","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 28px 120px}
+h1,h2,h3,h4{line-height:1.35;font-weight:700;letter-spacing:.2px}
+h1{font-size:2rem;margin:0 0 18px;background:linear-gradient(92deg,var(--accent),var(--accent2));
+   -webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.42rem;margin:56px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+h3{font-size:1.14rem;margin:34px 0 12px;color:#fff}
+h4{font-size:1rem;margin:24px 0 8px;color:var(--accent2)}
+p{margin:12px 0;color:#dbe4ec}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,122,154,.35)}
+a:hover{border-bottom-color:var(--accent)}
+hr{border:0;border-top:1px solid var(--line);margin:44px 0}
+blockquote{
+  margin:18px 0;padding:14px 18px;border-left:3px solid var(--accent);
+  background:linear-gradient(90deg,rgba(255,122,154,.10),rgba(255,122,154,.01));
+  border-radius:0 8px 8px 0;color:#e9eef4;
+}
+blockquote p{margin:6px 0}
+code{
+  font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.88em;
+  background:rgba(90,200,250,.12);color:#9fdcff;padding:2px 6px;border-radius:5px;
+}
+pre{
+  background:var(--code-bg);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;overflow:auto;margin:18px 0;
+}
+pre code{background:none;color:#c9d6e2;padding:0;font-size:.86em;line-height:1.65}
+.table-wrap{overflow:auto;margin:18px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.92em;min-width:560px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#16202c;color:#fff;font-weight:600;white-space:nowrap}
+tbody tr:nth-child(odd){background:rgba(255,255,255,.018)}
+tbody tr:hover{background:rgba(90,200,250,.06)}
+ul,ol{margin:12px 0;padding-left:24px}
+li{margin:7px 0;color:#dbe4ec}
+strong{color:#fff}
+.top{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 26px}
+.top a{
+  font-size:.82rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--bg2);color:var(--dim)
+}
+.top a:hover{color:var(--accent);border-color:var(--accent)}
+footer{margin-top:70px;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line);padding-top:18px}
+@media (max-width:640px){.wrap{padding:32px 16px 90px}h1{font-size:1.55rem}h2{font-size:1.22rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="安卓-root-使用者指南-实操版">安卓 Root 使用者指南（实操版）</h1>
+<blockquote><strong>与主手册的分工</strong>：《安卓 Root 实战手册 v1.2》讲「生态为什么长这样」；本册讲「我要干什么 → 装什么 → 出问题怎么办」。 <strong>适用</strong>：已 root 或准备 root 的用户 ｜ <strong>专项</strong>：荣耀 8E5 / Magic8 Pro（假回锁 + FinaSU 实测路径） <strong>快照日</strong>：2026-10-29。生态每月都在变，装机前请核对各项目 Release。</blockquote>
+<blockquote><strong>先分清楚两件事（全册都按这个模型讲）</strong> <strong>「怎么拿到 root」</strong>：解锁刷内核（永久）／ 漏洞提权（临时）——这是<strong>手段</strong>。 <strong>「root 是哪一家」</strong>：Magisk / KernelSU 系 / APatch 系——这是<strong>分支</strong>，由<strong>内核里跑的那份实现</strong>决定。 所以「临时 root」<strong>不是一个分支</strong>，用它提权后接管的是内核里那份 <code>.ko</code>，装哪家管理器都不改变分支。</blockquote>
+<hr/>
+<h2 id="0-30-秒速查-我该用哪个">0. 30 秒速查：我该用哪个？</h2>
+<p>先回答一个问题：<strong>你的机器能不能解锁 BL？</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>情况</th>
+<th>直接结论</th>
+<th>跳转</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>能解锁 BL，第一次玩</strong></td>
+<td><strong>Magisk 官方</strong> + 开 Zygisk</td>
+<td><a href="#21-一页选型表">2.1</a></td>
+</tr>
+<tr>
+<td><strong>能解锁 BL，在意银行/支付 App</strong></td>
+<td><strong>KernelSU-Next</strong> 或 <strong>SukiSU-Ultra</strong>（自带挂载引擎，省心）</td>
+<td><a href="#23-分支速查卡一张卡看懂一个分支">2.3</a></td>
+</tr>
+<tr>
+<td><strong>能解锁 BL，想玩内核模块 KPM</strong></td>
+<td><strong>SukiSU-Ultra</strong> / <strong>BakaSU</strong> / <strong>APatch</strong> 三选一</td>
+<td><a href="#45-我想用内核模块-kpm">4.5</a></td>
+</tr>
+<tr>
+<td><strong>想一次装完、不想折腾</strong></td>
+<td><strong>FinaSU</strong>（内置 Zygisk + Shizuku API + 隐藏）</td>
+<td><a href="#23-分支速查卡一张卡看懂一个分支">2.3 FinaSU</a></td>
+</tr>
+<tr>
+<td><strong>不能解锁 BL（荣耀/华为等），只想做临时的事</strong></td>
+<td><strong>漏洞提权 + <code>soft-reboot</code></strong>；分支由漏洞链的 <code>.ko</code> 决定，不由你选</td>
+<td><a href="#62-状态-1漏洞提权现在能做什么">6.2</a></td>
+</tr>
+<tr>
+<td><strong>不能解锁 BL，但想长期用</strong></td>
+<td><strong>假回锁</strong>（改写 ABL + efisp，保留锁定外观）→ 装与内核同分支的管理器</td>
+<td><a href="#63-要不要走到状态-2假回锁--永久-root">6.3</a></td>
+</tr>
+</tbody></table></div>
+<p><strong>再回答第二个问题：你主要想干什么？</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>我想…</th>
+<th>装这些（按此顺序）</th>
+<th>跳转</th>
+</tr></thead><tbody>
+<tr>
+<td>去广告</td>
+<td>systemless hosts + AdAway</td>
+<td><a href="#41-我想去广告">4.1</a></td>
+</tr>
+<tr>
+<td>删预装</td>
+<td>直接 <code>pm uninstall</code>（临时 root 也行）</td>
+<td><a href="#42-我想删预装">4.2</a></td>
+</tr>
+<tr>
+<td>银行/支付 App 能用</td>
+<td>Zygisk Assistant → PlayIntegrityFork →（必要时）Tricky Store</td>
+<td><a href="#43-我想让银行支付-app-能用">4.3</a></td>
+</tr>
+<tr>
+<td>装 Xposed 模块</td>
+<td>Zygisk 实现 → Vector → Xposed 模块</td>
+<td><a href="#44-我想装-xposed-模块">4.4</a></td>
+</tr>
+<tr>
+<td>改系统界面/性能</td>
+<td>先看你的 ROM 是不是接近原生，<strong>定制 ROM 大概率白装</strong></td>
+<td><a href="#46-我想改界面或性能">4.6</a></td>
+</tr>
+<tr>
+<td>只是想用 Shizuku 类 API</td>
+<td>FinaSU 内置 Sui，或装 Shizuku App</td>
+<td><a href="#47-我只是想要-shizuku-那类能力">4.7</a></td>
+</tr>
+</tbody></table></div>
+<hr/>
+<h2 id="1-动手前-先量三件事-3-分钟">1. 动手前，先量三件事（3 分钟）</h2>
+<p>把下面三条跑完，后面所有决策才有依据，<strong>不要跳过</strong>。</p>
+<pre><code># ① 内核里到底有没有 root 实现？
+adb shell su -c &quot;ls /data/adb/ksu /data/adb/magisk /data/adb/ap 2&gt;/dev/null&quot;
+adb shell su -c &quot;ksud -V&quot; 2&gt;/dev/null || echo &quot;不是 KernelSU 系&quot;
+
+# ②  bootloader 锁没锁？
+adb shell getprop ro.boot.flash.locked      # 1 = 锁定
+adb shell getprop ro.boot.vbmeta.device_state  # locked / unlocked
+
+# ③ 内核接口版本（刷任何内核级东西前必看）
+adb shell uname -r      # 形如 6.12.58-android16-... → KMI 是 android16-6.12</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>结果</th>
+<th>你属于</th>
+<th>能装持久化模块吗</th>
+</tr></thead><tbody>
+<tr>
+<td>有 <code>/data/adb/ksu</code> 或 <code>magisk</code> 或 <code>ap</code>，且 BL 已解锁</td>
+<td><strong>永久 root</strong></td>
+<td>✅ 装完重启即生效</td>
+</tr>
+<tr>
+<td>有 root 但 BL 锁定（漏洞提权，每次开机重来）</td>
+<td><strong>临时 root</strong></td>
+<td>⚠️ 只能靠软重启，见 <a href="#53-为什么我重启后模块就没了临时-root-必读">5.3</a></td>
+</tr>
+<tr>
+<td>BL 显示 locked，但 <code>/data/adb</code> 是持久的、重启还在</td>
+<td><strong>假回锁（永久）</strong></td>
+<td>✅ 与真解锁等效</td>
+</tr>
+<tr>
+<td>什么都没有</td>
+<td>还没 root</td>
+<td>先解决 root</td>
+</tr>
+</tbody></table></div>
+<p><strong>一句话判据</strong>：模块挂载发生在开机阶段；<strong>物理重启后 root 就没了 = 模块永远挂不上</strong>。这是临时 root 一切麻烦的根源。</p>
+<hr/>
+<h2 id="2-su-管理器选型-本册重点">2. su 管理器选型（本册重点）</h2>
+<blockquote><strong>配套图</strong>：同目录 <code>su管理器选型决策图.svg</code> —— 三个问题定位到分支，并列出「选完之后必做的第一步」。 记不住表就记这句：<strong>要元模块的分支，先装元模块；要 Zygisk 的分支，先装 Zygisk 实现。</strong></blockquote>
+<h3 id="2-1-一页选型表">2.1 一页选型表</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>分支</th>
+<th>一句话定位</th>
+<th>要元模块吗</th>
+<th>要另装 Zygisk 吗</th>
+<th>KPM</th>
+<th>SUSFS</th>
+<th>适合谁</th>
+<th>别选它，如果…</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Magisk 官方</strong></td>
+<td>最通用、资料最多</td>
+<td>不需要（内置）</td>
+<td>不需要（内置开关）</td>
+<td>❌</td>
+<td>❌</td>
+<td>第一次玩机、要 Zygisk 生态</td>
+<td>你要内核级隐藏</td>
+</tr>
+<tr>
+<td><strong>Magisk Alpha</strong></td>
+<td>官方的隐藏强化版</td>
+<td>不需要</td>
+<td>内置</td>
+<td>❌</td>
+<td>❌</td>
+<td>想低调一点的 Magisk 用户</td>
+<td>追新（更新节奏不稳）</td>
+</tr>
+<tr>
+<td><strong>KitsuneMask</strong></td>
+<td>Magisk 的 fork，功能叠加</td>
+<td>不需要</td>
+<td>内置</td>
+<td>❌</td>
+<td>❌</td>
+<td>怀念老 Magisk 功能</td>
+<td>追求稳定优先</td>
+</tr>
+<tr>
+<td><strong>KernelSU 官方</strong></td>
+<td>基准内核级实现</td>
+<td>✅ <strong>必须装</strong></td>
+<td>✅ 需要</td>
+<td>❌</td>
+<td>⚠️ 需补丁内核</td>
+<td>求稳、要干净实现</td>
+<td>你嫌多装一个玩意儿麻烦</td>
+</tr>
+<tr>
+<td><strong>KernelSU-Next</strong></td>
+<td>KSU 的增强分支</td>
+<td><strong>不需要</strong>（自带）</td>
+<td>✅ 需要</td>
+<td>❌</td>
+<td>⚠️ 需补丁内核</td>
+<td><strong>想用 KSU 又不想管元模块</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>SukiSU-Ultra</strong></td>
+<td>功能最全（KPM+SUSFS+伪装）</td>
+<td><strong>不需要</strong>（自带）</td>
+<td>✅ 需要</td>
+<td>✅</td>
+<td>✅</td>
+<td>要内核模块、要强隐藏</td>
+<td>你最在意稳定性口碑</td>
+</tr>
+<tr>
+<td><strong>BakaSU</strong>（原 ReSukiSU）</td>
+<td>求稳的重构版</td>
+<td>✅ <strong>必须装</strong></td>
+<td>✅ 需要</td>
+<td>✅</td>
+<td>⚠️</td>
+<td>老机型、多管理器互通</td>
+<td>你要最新特性</td>
+</tr>
+<tr>
+<td><strong>FinaSU</strong></td>
+<td>全家桶（内置一堆）</td>
+<td>不需要（内置 Folk-Mount）</td>
+<td>不需要（内置 FolkZygisk）</td>
+<td>❌</td>
+<td>✅ 管理器管</td>
+<td>想一次装完、要内置 Sui</td>
+<td>你的机型没有现成内核</td>
+</tr>
+<tr>
+<td><strong>YukiSU</strong></td>
+<td>KSU 下游，白名单授权</td>
+<td>✅ <strong>必须装</strong></td>
+<td>内置 YukiZygisk</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>喜欢白名单模型</td>
+<td>你习惯弹窗授权</td>
+</tr>
+<tr>
+<td><strong>APatch</strong></td>
+<td>不改内核也能内核级</td>
+<td>不需要</td>
+<td>✅ 需要</td>
+<td>✅</td>
+<td>❌</td>
+<td>无法编译内核又想要 KPM</td>
+<td>你要 SUSFS</td>
+</tr>
+<tr>
+<td><strong>FolkPatch / ShiroSU</strong></td>
+<td>APatch 的分支</td>
+<td>不需要</td>
+<td>✅ 需要</td>
+<td>✅</td>
+<td>❌</td>
+<td>APatch 生态用户</td>
+<td>你要最稳的</td>
+</tr>
+</tbody></table></div>
+<p><strong>读表口诀</strong>：</p>
+<ol>
+<li><strong>&quot;要元模块吗&quot;列 = ✅ 的，装任何功能模块之前，先把元模块装上。</strong> 不装 = 装了完全不生效（第一大玄学）。</li>
+<li><strong>&quot;要另装 Zygisk 吗&quot;列 = ✅ 的，装 LSPosed/Vector 之前，先装 Zygisk Next 或 ReZygisk。</strong></li>
+<li><strong>KPM 只有 3 家能做</strong>：SukiSU / BakaSU / APatch 系。<strong>SUSFS 只认 KSU 系 + 打过补丁的内核。</strong></li>
+</ol>
+<h3 id="2-2-三条互斥铁律-违反必翻车">2.2 三条互斥铁律（违反必翻车）</h3>
+<ol>
+<li><strong>一个内核只能有一套 root。</strong> Magisk 与 KernelSU 系、APatch <strong>不能共存</strong>。</li>
+<li><strong>管理器与内核必须同分支同版本协议。</strong> 跨分支装管理器 = 永远显示「未安装 / 不支持」。</li>
+<li><strong>Zygisk 实现只能有一套。</strong> 内置引擎（FolkZygisk / YukiZygisk）与外挂（ZN / ReZygisk / NeoZygisk）<strong>二选一</strong>，双开会互相抢注入。</li>
+</ol>
+<h3 id="2-3-分支速查卡-一张卡看懂一个分支">2.3 分支速查卡（一张卡看懂一个分支）</h3>
+<p><strong>🟦 Magisk 官方</strong></p>
+<ul>
+<li>选它：第一次玩、要最全的 Zygisk 模块生态、要最多教程</li>
+<li>装完第一步：设置里打开 <strong>Zygisk</strong></li>
+<li>别装：任何&quot;元模块&quot;（Magisk 没有这个概念）</li>
+<li>隐藏路线：Zygisk Assistant → PlayIntegrityFork</li>
+</ul>
+<p><strong>🟩 KernelSU 官方</strong></p>
+<ul>
+<li>选它：想要干净的内核级实现、看得懂文档</li>
+<li><strong>装完第一步：先装 <code>meta-overlayfs</code>（元模块），再谈别的</strong></li>
+<li>之后：Zygisk Next / ReZygisk → 功能模块</li>
+<li>别装：KPM 内核模块（不支持）</li>
+</ul>
+<p><strong>🟩 KernelSU-Next</strong></p>
+<ul>
+<li>选它：想要 KSU 的能力<strong>又不想管元模块</strong>（自带挂载引擎）</li>
+<li>装完第一步：直接装 Zygisk 实现 → 功能模块</li>
+<li>配 SUSFS 补丁内核可上内核级隐藏</li>
+</ul>
+<p><strong>🟪 SukiSU-Ultra</strong></p>
+<ul>
+<li>选它：要 <strong>KPM 内核模块</strong> 或 <strong>SUSFS 内核级隐藏</strong></li>
+<li>装完第一步：Zygisk 实现 → 功能模块（挂载引擎自带）</li>
+<li>心理预期：功能最全，稳定性口碑一般，出问题要有自己查的觉悟</li>
+</ul>
+<p><strong>🟪 BakaSU（原 ReSukiSU）</strong></p>
+<ul>
+<li>选它：老机型、求稳、要多管理器互通</li>
+<li><strong>装完第一步：装元模块</strong></li>
+<li>支持 KPM；Tag 多为 pre-release，别追最新</li>
+</ul>
+<p><strong>🟧 FinaSU</strong></p>
+<ul>
+<li>选它：想「一次装完」——内置 FolkZygisk + Sui（Shizuku API）+ 挂载引擎 + 隐藏开关</li>
+<li><strong>装完第一步：确认挂载后端</strong>（automatic / built-in / metamodule only / NoMount / off）</li>
+<li>默认 <code>automatic</code> 就好；<strong>&quot;内置引擎 + 元模块&quot;双开 = 卡启动</strong></li>
+<li><strong>最大的坑：授权是白名单，不弹窗。</strong> 新 App 要 root 必须手动加白名单</li>
+<li>别再装：Zygisk Next、ReZygisk、Shizuku、Sui、meta-overlayfs（全都内置了，装了抢服务）</li>
+<li><strong>荣耀 8E5 上已实测可用</strong>：假回锁（保留 locked 外观）后装 FinaSU 管理器即可接管，见 <a href="#63-要不要走到状态-2假回锁--永久-root">6.3</a></li>
+</ul>
+<p><strong>🟥 APatch</strong></p>
+<ul>
+<li>选它：不想编译内核、又想要 KPM</li>
+<li>装完第一步：设好 <strong>SuperKey</strong>（忘了 = 管理器进不去），再装 APM 模块</li>
+<li>不支持 SUSFS</li>
+</ul>
+<hr/>
+<h2 id="3-模块速查-按-我要干什么-找">3. 模块速查：按「我要干什么」找</h2>
+<blockquote>模块名后带 ★ = 大多数人会装的。</blockquote>
+<h3 id="3-1-通用安装顺序-记住这一条就够">3.1 通用安装顺序（记住这一条就够）</h3>
+<pre><code>① 挂载能力：Magisk 跳过 ｜ KSU 官方/BakaSU/YukiSU 装元模块 ｜ 其他跳过
+② 注入能力：Magisk 开 Zygisk ｜ 其他装 Zygisk Next 或 ReZygisk ｜ FinaSU 用内置
+③ 隐藏/完整性（需要时才装）
+④ Vector（要 Xposed 才装）
+⑤ 功能模块
+每装一层 → 重启（临时 root 用软重启）→ 验证 → 再装下一层</code></pre>
+<h3 id="3-2-模块清单-装什么-什么时候不需要装">3.2 模块清单（装什么 / 什么时候不需要装）</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>类别</th>
+<th>模块</th>
+<th>什么时候装</th>
+<th>什么时候<strong>别</strong>装</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>挂载</strong> ★</td>
+<td><code>meta-overlayfs</code></td>
+<td>KSU 官方 / BakaSU / YukiSU</td>
+<td>KSU-Next、SukiSU、FinaSU、Magisk、APatch 都不需要</td>
+</tr>
+<tr>
+<td><strong>挂载</strong></td>
+<td><code>mountify</code></td>
+<td>想要更低 mount 痕迹</td>
+<td>已用 FinaSU 的 NoMount</td>
+</tr>
+<tr>
+<td><strong>注入</strong> ★</td>
+<td><code>Zygisk Next</code></td>
+<td>要用 Vector / Zygisk 模块</td>
+<td>已开 Magisk 内置 Zygisk、已用内置 FolkZygisk</td>
+</tr>
+<tr>
+<td><strong>注入</strong></td>
+<td><code>ReZygisk</code> / <code>NeoZygisk</code></td>
+<td>想要开源注入实现</td>
+<td>要用 Shamiko（已停更，别用）</td>
+</tr>
+<tr>
+<td><strong>隐藏</strong> ★</td>
+<td><code>Zygisk Assistant</code></td>
+<td>银行 App 检测、DenyList 强化</td>
+<td>用 SUSFS 内核级方案时</td>
+</tr>
+<tr>
+<td><strong>完整性</strong> ★</td>
+<td><code>PlayIntegrityFork</code></td>
+<td>Play 商店/银行提示设备不合规</td>
+<td>用了 SUSFS 全套时可能冲突</td>
+</tr>
+<tr>
+<td><strong>完整性</strong></td>
+<td><code>Tricky Store</code></td>
+<td>DEVICE 级仍不过时</td>
+<td>BASIC/DEVICE 已通过就别加</td>
+</tr>
+<tr>
+<td><strong>反枚举</strong></td>
+<td><code>Hide My Applist</code></td>
+<td>App 扫描应用列表来判定</td>
+<td>目标 App 不做列表检测</td>
+</tr>
+<tr>
+<td><strong>Xposed</strong> ★</td>
+<td><code>Vector</code></td>
+<td>要装 Xposed 模块</td>
+<td>原版 LSPosed 已停更（2023-10），别装</td>
+</tr>
+<tr>
+<td><strong>实用小件</strong></td>
+<td><code>CorePatch</code> / <code>DisableFlagSecure</code> / <code>CaptureSposed</code></td>
+<td>要装降级 APK / 要截图 / 要录屏</td>
+<td>按需</td>
+</tr>
+<tr>
+<td><strong>去广告</strong> ★</td>
+<td><code>systemless hosts</code> + <code>AdAway</code></td>
+<td>要全局去广告</td>
+<td>Magisk 有内置开关，不必另装模块</td>
+</tr>
+<tr>
+<td><strong>省电</strong></td>
+<td><code>Universal GMS Doze</code></td>
+<td>GMS 唤醒耗电</td>
+<td>已经很省电就别加</td>
+</tr>
+<tr>
+<td><strong>内核</strong></td>
+<td>KPM（如 NoHello）</td>
+<td>要内核级反检测</td>
+<td>不是 SukiSU / BakaSU / APatch 就装不了</td>
+</tr>
+<tr>
+<td><strong>内核</strong></td>
+<td><code>susfs4ksu</code></td>
+<td>要内核级隐藏</td>
+<td>内核没打 SUSFS 补丁 = 装了更糟</td>
+</tr>
+<tr>
+<td><strong>插件宿主</strong></td>
+<td><code>KSU WebUI Standalone</code> / <code>WebUI X</code></td>
+<td>想用带界面的模块（如隐藏配置）</td>
+<td>Magisk 用户才需要单独装</td>
+</tr>
+</tbody></table></div>
+<p><strong>一句话避坑</strong>：<strong>别为了&quot;更保险&quot;多装。</strong> 每多一个模块就多一个冲突源；装之前先问：我现在的问题它解决吗？</p>
+<hr/>
+<h2 id="4-常见目标-具体做法">4. 常见目标 → 具体做法</h2>
+<h3 id="4-1-我想去广告">4.1 我想去广告</h3>
+<pre><code>1. Magisk：设置 → 开启 Systemless hosts → 装 AdAway
+   KernelSU 系：装 systemless hosts 模块 → 装 AdAway
+2. 重启（临时 root 用软重启）
+3. AdAway 里更新规则 → 看广告是否消失</code></pre>
+<p>验证：<code>adb shell cat /system/etc/hosts</code> 里有一堆 <code>0.0.0.0</code> 条目。</p>
+<h3 id="4-2-我想删预装">4.2 我想删预装</h3>
+<pre><code>adb shell pm uninstall --user 0 &lt;包名&gt;     # 临时 root 也能用，但重启后恢复
+adb shell pm disable-user --user 0 &lt;包名&gt;  # 更温和，能恢复
+adb shell pm enable &lt;pkg&gt;                  # 恢复被停用/被 disable 的包（含管理器本体）
+adb shell pm path &lt;pkg&gt;                    # 查 APK 路径，判断 manager.apk 是否装了</code></pre>
+<p>查包名：<code>adb shell cmd package query-activities -a android.intent.action.MAIN -c android.intent.category.LAUNCHER --brief</code></p>
+<p>⚠️ <strong>别删</strong>：<code>com.android.systemui</code>、<code>com.google.android.gms</code>、任何带 <code>honor/hihonor</code> 的系统核心组件。</p>
+<h3 id="4-3-我想让银行-支付-app-能用">4.3 我想让银行/支付 App 能用</h3>
+<p><strong>按顺序加变量，每加一项就重启 + 复测，出问题回退上一步：</strong></p>
+<pre><code>① 管理器隐藏包名（管理器设置里改）
+② 装 Zygisk Assistant → 把目标 App + Google Play 服务 + GMS + Play 商店加入 DenyList
+   （用 Zygisk Assistant 时要关掉 Magisk 的 &quot;Enforce DenyList&quot;）
+③ 装 PlayIntegrityFork（指纹失效会突然不过，及时更新模块）
+④ 仍不过 → Hide My Applist
+⑤ 仍不过 → Tricky Store</code></pre>
+<p><strong>先量后治</strong>：用 Play Integrity API Checker 看三项。</p>
+<ul>
+<li>BASIC ✅ / DEVICE ✅ / <strong>STRONG ❌</strong> → 这是正常上限，<strong>别再折腾 STRONG</strong>（它依赖未被吊销的硬件 keybox，解锁 BL 后基本拿不到）</li>
+<li>DEVICE ❌ → 修 PIF + 清 GMS/Play 商店数据</li>
+</ul>
+<p>⚠️ 即使全过，<strong>银行条款通常禁止在改机环境使用</strong>，出现纠纷可能不予赔付。高价值操作用第二台未 root 的机器。</p>
+<h3 id="4-4-我想装-xposed-模块">4.4 我想装 Xposed 模块</h3>
+<pre><code>① Magisk：开 Zygisk ｜ 其他：装 Zygisk Next 或 ReZygisk ｜ FinaSU：启用 FolkZygisk
+② 重启 → 装 Vector（LSPosed 的继任者）
+③ 重启 → Vector 里勾选模块 + 勾作用域（目标 App）
+④ 强停目标 App 再打开（进程没重启 = 模块不生效）</code></pre>
+<p>Vector 打不开/不注入时：见 <a href="#54-vector-打不开或不注入">5.4</a>。</p>
+<h3 id="4-5-我想用内核模块-kpm">4.5 我想用内核模块（KPM）</h3>
+<p><strong>先确认你的分支</strong>：只有 <strong>SukiSU-Ultra / BakaSU / APatch 系</strong> 能加载 KPM。</p>
+<pre><code>1. 确认内核开了 CONFIG_KPM
+2. 管理器内加载 .kpm，或用 APatch 的 SuperKey 流程
+3. 重启 → lsmod 看是否加载</code></pre>
+<p>⚠️ 内核模块搞错 = 不开机，刷之前一定备份 <code>boot</code> / <code>init_boot</code>。</p>
+<h3 id="4-6-我想改界面或性能">4.6 我想改界面或性能</h3>
+<p><strong>先自查 ROM 类型</strong>：</p>
+<div class="table-wrap"><table><thead><tr>
+<th>ROM</th>
+<th>结论</th>
+</tr></thead><tbody>
+<tr>
+<td>类原生/Pixel/LineageOS</td>
+<td>Iconify、PixelXpert 这类能用</td>
+</tr>
+<tr>
+<td><strong>MagicOS / MIUI / ColorOS / OriginOS</strong></td>
+<td><strong>SystemUI 被厂商重写，装了也白装</strong></td>
+</tr>
+</tbody></table></div>
+<p>省电类（GMS Doze）、音效类（JamesDSP）通用性较好，可以试；<strong>一次只装一个</strong>，装完重启测一天。</p>
+<h3 id="4-7-我只是想要-shizuku-那类能力">4.7 我只是想要 Shizuku 那类能力</h3>
+<ul>
+<li><strong>FinaSU 用户</strong>：内置 Sui，<strong>别再装 Shizuku App</strong>（会抢服务）</li>
+<li>其他：装 Shizuku App，或装 Sui 模块</li>
+</ul>
+<hr/>
+<h2 id="5-翻车对照表-现象-原因-一句话处理">5. 翻车对照表（现象 → 原因 → 一句话处理）</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>现象</th>
+<th>最可能的原因</th>
+<th>一句话处理</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>装了模块但完全没效果</strong></td>
+<td>官方 KSU / BakaSU / YukiSU <strong>没装元模块</strong></td>
+<td>装 <code>meta-overlayfs</code> 再重启</td>
+</tr>
+<tr>
+<td><strong>管理器显示&quot;未安装/不支持&quot;</strong></td>
+<td>管理器与内核<strong>不同分支/版本</strong></td>
+<td>换回与内核同分支的管理器</td>
+</tr>
+<tr>
+<td><strong>Vector 装了但模块不生效</strong></td>
+<td>没有 Zygisk 实现，或没勾作用域，或进程没强停</td>
+<td>装 ZN → 勾作用域 → 强停 App</td>
+</tr>
+<tr>
+<td><strong>Vector 打不开 / 只进 shell</strong></td>
+<td>软重启后<strong>双 daemon</strong>（见 5.4），或 manager.apk（<code>org.matrix.vector.manager</code>）未安装 / 被 pm disable；LSPosed 侧为 <code>org.lsposed.manager</code>，另需 <code>pm enable org.lsposed.daemon</code></td>
+<td>禁用 → 软重启 → 启用 → 软重启；<code>pm path &lt;管理器包&gt;</code> / 从发布包 zip 提取 manager.apk 安装 / <code>pm enable org.lsposed.daemon</code></td>
+</tr>
+<tr>
+<td><strong>重启后模块全没了</strong></td>
+<td>临时 root（物理重启清掉了内核里的 root）</td>
+<td>只能 <code>ksud soft-reboot</code>，见 5.3</td>
+</tr>
+<tr>
+<td><strong>银行 App 依然拒绝</strong></td>
+<td>完整性 DEVICE 级没过 / App 级检测</td>
+<td>按 4.3 顺序逐项加，每步复测</td>
+</tr>
+<tr>
+<td><strong>装了 SUSFS 反而更糟</strong></td>
+<td>内核没打 SUSFS 补丁，破坏了 key attestation</td>
+<td>卸掉，换匹配的补丁内核</td>
+</tr>
+<tr>
+<td><strong>刷内核模块后不开机</strong></td>
+<td>KPM / SUSFS 的 KMI 不匹配</td>
+<td>进 fastboot 刷回备份的 <code>init_boot</code></td>
+</tr>
+<tr>
+<td><strong>App 说&quot;没有 root 权限&quot;</strong>（FinaSU / YukiSU）</td>
+<td>白名单授权模型，<strong>默认谁都没有 root</strong></td>
+<td>管理器里把 App 加入白名单</td>
+</tr>
+<tr>
+<td><strong>开机卡死循环</strong></td>
+<td>某个模块</td>
+<td>按 5.2 四级自救，<strong>不要恢复出厂</strong></td>
+</tr>
+<tr>
+<td><strong>OTA 之后 root 没了</strong></td>
+<td>更新冲掉了 <code>init_boot</code></td>
+<td>先刷回 stock → 升级 → 重新提取修补</td>
+</tr>
+<tr>
+<td><strong>模块装完提示 update/remove 未落地</strong></td>
+<td>状态未提交</td>
+<td><code>su -c &quot;ksud module list&quot;</code> 看状态，重启一次</td>
+</tr>
+</tbody></table></div>
+<h3 id="5-2-开机卡死-四级自救-按顺序-别跳级">5.2 开机卡死：四级自救（按顺序，别跳级）</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>级别</th>
+<th>操作</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td>L1 安全模式</td>
+<td>开机按音量下，或 <code>su -c &quot;touch /data/adb/ksu/.safe_mode&quot;</code></td>
+<td>还能进系统/能 adb</td>
+</tr>
+<tr>
+<td>L2 禁单个模块</td>
+<td><code>touch /data/adb/modules/&lt;id&gt;/disable</code></td>
+<td>知道元凶时用</td>
+</tr>
+<tr>
+<td>L3 全禁</td>
+<td>Magisk：<code>adb shell magisk --remove-modules</code>；其他：把 <code>/data/adb/modules</code> 改名</td>
+<td>不知道元凶</td>
+</tr>
+<tr>
+<td>L4 回刷镜像</td>
+<td><code>fastboot flash init_boot init_boot_stock.img</code></td>
+<td>用你备份的那份</td>
+</tr>
+</tbody></table></div>
+<p>⚠️ <strong>不要&quot;恢复出厂&quot;救砖</strong>：会连加密密钥一起销毁，问题没解决还多丢一次数据。</p>
+<h3 id="5-3-为什么我重启后模块就没了-临时-root-必读">5.3 为什么我重启后模块就没了（临时 root 必读）</h3>
+<ul>
+<li>模块挂载在<strong>开机阶段</strong>发生；物理重启后内核回到原厂，root 消失 → 挂载永远不发生。</li>
+<li><strong>唯一解法：软重启</strong>——只重启 Android 框架，不重载内核，让 init 重放开机阶段：</li>
+</ul>
+<p>```bash</p>
+<p>su -c &quot;ksud soft-reboot&quot;</p>
+<p>```</p>
+<ul>
+<li>限制：① 老版本 KSU 的软重启不会重放 boot 阶段（那种构建无解）；② 依赖真实重启的模块（改 init/thermal 的）软重启后仍不完整；③ <strong>每次开机都要重来</strong>——提权 → 模块（文件还在，不用重装）→ 软重启。</li>
+</ul>
+<h3 id="5-4-vector-打不开或不注入">5.4 Vector 打不开或不注入</h3>
+<ul>
+<li><strong>首要原因（2026-11-05 真机核实）</strong>：先按下面三条排查，别急着禁用/启用模块。
+<ul>
+<li><strong>① 管理器本体缺失</strong>：发布包 zip 内含 <code>manager.apk</code>（<code>org.lsposed.manager</code>，带 launcher Activity 的 UI 本体）与 <code>daemon.apk</code>（<code>org.lsposed.daemon</code>，零 Activity 的后台连接器）。只装了 daemon 且被 <code>pm disable</code>、没装 manager 时，框架虽已注入，点 LSPosed 图标/启动按钮仍进不去界面，与框架本身无关。Vector 管理器包是 <code>org.matrix.vector.manager</code>。排查：<code>pm path &lt;pkg&gt;</code> / <code>pm list packages -d</code>；修复：从 zip 提取 manager.apk 后 <code>pm install -r</code>，再 <code>pm enable org.lsposed.daemon</code>。</li>
+<li><strong>② 共享锁未释放</strong>：LSPosed 与 Vector 共用 <code>/data/adb/lspd/lock</code> 的 flock 单例锁；<code>u:r:ksu:s0</code> 上下文下 rm/chcon/restorecon/chmod 全无效，唯一解法是扫 <code>/proc/[0-9]*/fd/*</code> 用 <code>readlink</code> 命中锁的 pid 并 <code>kill -9</code> 释放 fd。</li>
+<li><strong>③ 统一清残留 + 直拉 daemon</strong>：两框架共用同一套清残留，<strong>不再为 Vector 单独走 <code>service.sh</code></strong>——杀 <code>zygisk-ptrace64</code> / <code>vectord</code> / <code>lspd</code> / 两侧 <code>zygiskd64-zygisk_lsposed</code> / <code>zygiskd64-zygisk_vector</code>，释放锁，<code>rm -rf /data/adb/neozygisk</code>，拉起 NeoZygisk monitor（<code>zygisksu/post-fs-data.sh</code>）与选中目标 daemon，<code>setprop ctl.restart zygote</code> 验证。daemon 一律 <code>app_process -Djava.class.path=&lt;模块&gt;/daemon.apk -Xnoimage-dex2oat /system/bin --nice-name=&lt;daemon&gt; &lt;Main&gt;</code> 直拉，必须带 <code>-Xnoimage-dex2oat</code>（避开 Android 17 ART 的 <code>dexoptanalyzer</code> SIGSEGV）。恢复页单选「选中谁就修谁」。</li>
+</ul>
+</li>
+<li><strong>次要原因（旧版）</strong>：软重启会 <code>stop → 重放 → start</code>。Vector 的旧 daemon 是 detached 进程，杀不掉；<code>service.sh</code> 又起一个新的 → 两个 daemon 抢同一服务 → 崩溃。</li>
+<li><strong>处理</strong>：禁用 Vector → 软重启 → 启用 Vector → 再软重启一次。</li>
+<li><strong>同类风险</strong>：任何&quot;自带守护进程 + 在 service.sh 启动&quot;的模块都可能双开。判断：<code>ps -A | grep -c &lt;daemon名&gt;</code>，&gt;1 就是撞了。</li>
+</ul>
+<h3 id="5-5-命令速查">5.5 命令速查</h3>
+<pre><code>su -c &quot;ksud -V&quot;                            # KSU 版本
+su -c &quot;ksud module list&quot;                   # 模块状态
+su -c &quot;ksud module install /sdcard/Download/x.zip&quot;
+su -c &quot;ksud module disable &lt;id&gt;&quot; &amp;&amp; su -c &quot;ksud soft-reboot&quot;
+touch /data/adb/modules/&lt;id&gt;/disable       # 手工禁用（救砖用）
+su -c &quot;cat /proc/mounts | grep -i overlay&quot; # 挂载生效了吗
+logcat -s KernelSU Magisk Zygisk           # 框架日志</code></pre>
+<hr/>
+<h2 id="6-荣耀-8e5-magic8-pro-专属路径">6. 荣耀 8E5 / Magic8 Pro 专属路径</h2>
+<h3 id="6-1-你的工具链-hnubl-会做四件事">6.1 你的工具链：hnubl 会做四件事</h3>
+<p><code>hawyn2018/honor_8e5_ubl</code>（桌面名 <code>hnubl</code>）——<strong>只适用于骁龙 8 Elite Gen 5（8E5）荣耀机型</strong>：</p>
+<div class="table-wrap"><table><thead><tr>
+<th>模块</th>
+<th>作用</th>
+</tr></thead><tbody>
+<tr>
+<td>提权</td>
+<td>按 <code>uname -r</code> 匹配内核资产（6.12.58 / 6.12.38），拿本次会话的 UID 0</td>
+</tr>
+<tr>
+<td>备份</td>
+<td>导出 A/B 双槽 <code>init_boot</code>、<code>abl</code> + GPT + SHA-256（<strong>解锁与永久 root 的唯一回滚素材</strong>）</td>
+</tr>
+<tr>
+<td>解锁</td>
+<td>修补 ABL + 新建 efisp 分区（假回锁 / 仅解锁 / 自定义刷写三种模式）</td>
+</tr>
+<tr>
+<td>设置</td>
+<td>外观项，无关</td>
+</tr>
+</tbody></table></div>
+<h3 id="6-2-状态-1-漏洞提权-现在能做什么">6.2 状态 1（漏洞提权，现在能做什么）</h3>
+<blockquote>这是<strong>手段</strong>，不是分支。提权后 <code>su -c ksud -V</code> 打出来的是哪一家，这台机器就属于哪一家（8E5 实测是 <strong>FinaSU</strong>）。</blockquote>
+<div class="table-wrap"><table><thead><tr>
+<th>能做</th>
+<th>不能做</th>
+</tr></thead><tbody>
+<tr>
+<td>删预装、改 hosts（<strong>重启还原</strong>）</td>
+<td>改物理分区（锁 BL 下 AVB 失败 = 硬砖，无 fastboot 救援）</td>
+</tr>
+<tr>
+<td>抓日志、备份、跑脚本（<strong>最安全的用途</strong>）</td>
+<td>刷 boot / init_boot</td>
+</tr>
+<tr>
+<td>备份 <code>init_boot</code> / <code>abl</code>（<strong>做任何实验前先做</strong>）</td>
+<td>依赖真实重启的模块</td>
+</tr>
+<tr>
+<td>装模块 + <code>ksud soft-reboot</code> 挂载</td>
+<td><strong>换 root 分支</strong>（见下）</td>
+</tr>
+</tbody></table></div>
+<p><strong>为什么换不了分支</strong>：漏洞链在内存里 <code>insmod</code> 一份<strong>预编译、版本固定</strong>的 <code>.ko</code>，管理器只是客户端。客户端必须和内核里的服务端同协议，所以——<strong>用哪一家不由你选，由漏洞链里那份 <code>.ko</code> 决定</strong>。装成别家的管理器只会显示「未安装」。</p>
+<p><strong>怎么知道你这条链是哪家</strong>：看 <code>su -c ksud -V</code>、<code>ls /data/adb/ksu/bin</code>，再对 <a href="#23-分支速查卡一张卡看懂一个分支">2.3 分支速查卡</a> 的特征。8E5 的链是 FinaSU 系（有 <code>folkzygisk</code>、<code>ksud</code> 带 <code>zygisk</code>/<code>sui</code>/<code>boot-hide</code> 子命令）。</p>
+<h3 id="6-3-要不要走到状态-2-假回锁-永久-root">6.3 要不要走到状态 2（假回锁 → 永久 root）</h3>
+<blockquote>⚠️ <strong>全文风险最高的一步</strong>。解锁方式不是官方解锁码，而是<strong>改写 ABL 引导 + 新建 efisp 分区</strong>。失败后果：卡 bootloader / 无 fastboot / 只能走售后或 EDL。</blockquote>
+<p><strong>留在状态 1 就够，如果你的目标只是</strong>：去广告、删预装、抓包调试、临时备份。</p>
+<p><strong>必须走到状态 2，如果你要</strong>：长期跑 Vector + 完整模块栈、过银行检测（临时 root 每次开机重来，模块栈无法维护）。</p>
+<p><strong>流程（阶段不可跳）</strong>：</p>
+<pre><code>A 准备：全量备份数据 + hnubl 备份分区（导出到电脑）+ 记下 uname -r + 关系统自动更新
+B 选模式：假回锁（保留原开机警告）/ 仅解锁（显示已解锁）/ 自定义（首次别用）
+C 执行：按 App 内流程走，全程别切后台、别断无线调试；完成后进 Recovery 清 data
+D 刷 root：fastboot flash init_boot_a &lt;修补后的 init_boot&gt;.img   ← 是 init_boot，不是 boot
+E 装模块：确认分支 → 补必备项 → Zygisk 实现 → 隐藏 → Vector → 功能模块
+F 后续 OTA：先刷回 init_boot_stock → 升级 → 重新提取新固件修补 → 再刷入</code></pre>
+<p><strong>8E5 实测配置（2026-10-29，假回锁后）</strong>：</p>
+<div class="table-wrap"><table><thead><tr>
+<th>项</th>
+<th>实测值</th>
+</tr></thead><tbody>
+<tr>
+<td>BL 状态</td>
+<td><code>ro.boot.vbmeta.device_state=locked</code> + <code>verifiedbootstate=green</code> → <strong>外观仍是锁定</strong></td>
+</tr>
+<tr>
+<td>实际 root</td>
+<td><strong>FinaSU</strong>（ksud 1.3.0 · uapi 6），<code>/data/adb</code> 持久，重启不丢</td>
+</tr>
+<tr>
+<td>管理器包名</td>
+<td><code>com.resukisu.resukisu</code>（FinaSU 沿用上游包名，<strong>所以包名认不出分支</strong>，要看文件指纹）</td>
+</tr>
+<tr>
+<td>挂载</td>
+<td>内置 Folk-Mount，overlay 8 个挂载点</td>
+</tr>
+<tr>
+<td>已装模块</td>
+<td>systemless hosts / 频率上限 / Sui / HMA / Vector / Zygisk Next / zygisksu</td>
+</tr>
+</tbody></table></div>
+<p><strong>分支选型（解锁后）</strong>：想要资料最全、出问题查得到答案 → <strong>KernelSU 官方 LKM</strong> 或 <strong>KSU-Next LKM</strong>（KMI <code>android16-6.12</code>）+ <code>meta-overlayfs</code> + <code>Zygisk Next</code> + <code>Zygisk Assistant</code>。想一次装完、接受&quot;全家桶&quot;风格 → <strong>FinaSU</strong>，8E5 已有实测先例，但注意它内置 Zygisk，<strong>别再叠 Zygisk Next</strong>。</p>
+<h3 id="6-4-magicos-会让你误判的那些事">6.4 MagicOS 会让你误判的那些事</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>现象</th>
+<th>真相</th>
+</tr></thead><tbody>
+<tr>
+<td>管理器经常&quot;掉线&quot;</td>
+<td>MagicOS 后台管控严 → 加受保护应用/自启动白名单</td>
+</tr>
+<tr>
+<td>关掉 USB 调试后设备 panic 重启</td>
+<td><strong>只在临时 root 阶段</strong>成立：提权链依赖 adb 上下文，会话中别关；走到假回锁后不再受影响</td>
+</tr>
+<tr>
+<td>钱包/系统 App 提示环境异常</td>
+<td>解锁 + 完整性降级，属预期，无根治</td>
+</tr>
+<tr>
+<td>Iconify / PixelXpert 没效果</td>
+<td>MagicOS 重写了 SystemUI → <strong>直接别装</strong></td>
+</tr>
+<tr>
+<td>应用分身/隐私空间里检测更严</td>
+<td>多用户/工作资料对 hook 更敏感 → 敏感 App 只装主用户</td>
+</tr>
+</tbody></table></div>
+<hr/>
+<h2 id="7-使用者的六条纪律">7. 使用者的六条纪律</h2>
+<ol>
+<li><strong>先备份，再动手</strong>：<code>init_boot</code> / <code>abl</code> 双槽 + GPT，导出到电脑。零风险，不可跳过。</li>
+<li><strong>一次只改一个变量</strong>，改完重启验证，出问题立刻回退。</li>
+<li><strong>只从项目官方 GitHub Releases 下载</strong>。TG 整合包、网盘短链是投毒重灾区；root 模块等于给系统装 ring0 后门。装之前看三件事：有仓库吗？近半年有提交吗？写了兼容范围吗？三条缺两条就别装。</li>
+<li><strong>SELinux 保持 Enforcing</strong>。要求 <code>setenforce 0</code> 才能工作的模块一律打问号。</li>
+<li><strong>别追求 STRONG 完整性</strong>，也别为了&quot;更保险&quot;堆叠模块——每多一个就多一个冲突源。</li>
+<li><strong>接受边界</strong>：变砖、丢数据、保修失效、被风控拒付都是真实后果。高价值支付操作用未 root 的第二台设备。</li>
+</ol>
+<hr/>
+<h2 id="附录-本册用到的官方源-自行核对">附录：本册用到的官方源（自行核对）</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>项目</th>
+<th>位置</th>
+</tr></thead><tbody>
+<tr>
+<td>Magisk</td>
+<td>github.com/topjohnwu/Magisk</td>
+</tr>
+<tr>
+<td>KernelSU</td>
+<td>github.com/tiann/KernelSU · kernelsu.org</td>
+</tr>
+<tr>
+<td>KernelSU-Next</td>
+<td>github.com/KernelSU-Next/KernelSU-Next</td>
+</tr>
+<tr>
+<td>SukiSU-Ultra</td>
+<td>github.com/SukiSU-Ultra/SukiSU-Ultra</td>
+</tr>
+<tr>
+<td>BakaSU（原 ReSukiSU）</td>
+<td>github.com/Baka-SU/BakaSU</td>
+</tr>
+<tr>
+<td>FinaSU</td>
+<td>github.com/LyraVoid/FinaSU</td>
+</tr>
+<tr>
+<td>APatch</td>
+<td>github.com/bmax121/APatch</td>
+</tr>
+<tr>
+<td>Zygisk Next</td>
+<td>github.com/Dr-TSNG/ZygiskNext</td>
+</tr>
+<tr>
+<td>ReZygisk</td>
+<td>github.com/PerformanC/ReZygisk</td>
+</tr>
+<tr>
+<td>Vector（LSPosed 继任）</td>
+<td>github.com/JingMatrix/Vector</td>
+</tr>
+<tr>
+<td>PlayIntegrityFork</td>
+<td>github.com/osm0sis/PlayIntegrityFork</td>
+</tr>
+<tr>
+<td>Tricky Store</td>
+<td>github.com/5ec1cff/TrickyStore</td>
+</tr>
+<tr>
+<td>Hide My Applist</td>
+<td>github.com/Dr-TSNG/Hide-My-Applist</td>
+</tr>
+<tr>
+<td>mountify</td>
+<td>github.com/backslashxx/mountify</td>
+</tr>
+<tr>
+<td>hnubl（8E5 工具链）</td>
+<td>github.com/hawyn2018/honor_8e5_ubl</td>
+</tr>
+</tbody></table></div>
+<hr/>
+<p>*使用者指南 v1.2 ｜ 2026-10-29 ｜ 配套《安卓 Root 实战手册 v1.2》（生态系统版）与两张速览图。*</p>
+<p>*v1.2 变更：统一「获取方式 ≠ 分支」模型（临时 root 不是分支）；8E5 章节改为假回锁实测结论。*</p>
+<footer>本页由手册 Markdown 自动生成 · 生态变动极快，动手前请以各项目 Release 与官方文档为准</footer>
+</div>
+</body>
+</html>

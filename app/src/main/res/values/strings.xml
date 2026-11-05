@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MagicRoot Guide</string>
+    <string name="subtitle">先确认管理器分支，再按正确顺序装模块；模块可一键下载安装。</string>
+
+    <!-- 标题行 -->
+    <string name="view_link">查看 ›</string>
+    <string name="changelog_title">本次更新</string>
+    <string name="close">关闭</string>
+
+    <!-- 提示说明规范：四档统一标签 -->
+    <string name="callout_tip">提示</string>
+    <string name="callout_caution">注意</string>
+    <string name="callout_warning">警告</string>
+    <string name="callout_success">成功</string>
+
+    <!-- 1 环境准备 -->
+    <string name="sec_env">环境准备</string>
+    <string name="sec_env_hint">先确认有没有拿到 root。没有 root 也能查看清单，但装不了模块。</string>
+    <string name="probe_button">重新检测 ›</string>
+    <string name="probe_idle">尚未检测</string>
+    <string name="probe_detail">查看检测详情 ›</string>
+    <string name="probe_detail_hide">收起详情 ‹</string>
+    <string name="probe_authorize">去管理器授权 ›</string>
+    <string name="probe_authorize_not_found">没找到管理器应用，请手动打开它给本 App 授权</string>
+    <string name="probing">正在读取 /data/adb、ksud 版本、管理器包名…</string>
+
+    <!-- 2 管理器分支 -->
+    <string name="sec_branch">管理器分支</string>
+    <string name="branch_status_probing">正在识别管理器分支…</string>
+    <string name="branch_status_auto">已自动识别：%1$s</string>
+    <string name="branch_status_confirm">只认出管理器包名，请确认：%1$s</string>
+    <string name="branch_status_no_root">没检测到 root 环境，请手动选择管理器分支</string>
+    <string name="branch_status_no_auth">系统已 root，但本 App 未获授权，请确认分支：%1$s</string>
+    <string name="branch_status_ambiguous">检测到管理器但无法确定分支（包名共用/多个管理器），请手动选择</string>
+    <string name="branch_status_unknown">无法自动识别，请手动选择管理器分支</string>
+    <string name="branch_status_editing">手动选择中：按管理器里显示的版本选</string>
+    <string name="pick_manual">不是这个？手动选 ›</string>
+    <string name="pick_manual_hint">不确定选哪个？看《su 管理器选型决策图》›</string>
+
+    <!-- 3 开始 -->
+    <string name="sec_start">开始</string>
+    <string name="sec_start_hint">生成清单不需要 root；安装模块需要 root 授权。</string>
+    <string name="next_button">生成设置项与模块清单</string>
+    <string name="install_existing_button">手动安装本地 zip（云盘/电脑下的包）</string>
+
+    <!-- 4 参考 -->
+    <string name="ref_view">查看大图 ›</string>
+    <string name="ref_read">打开手册 ›</string>
+    <string name="ref_online">在线打开 ›</string>
+    <string name="ref_zoom_in">放大 ›</string>
+    <string name="ref_zoom_fit">适应屏幕 ›</string>
+    <string name="ref_close">‹ 返回</string>
+    <string name="no_browser">没有可用的浏览器</string>
+
+    <string name="rules_title">三条互斥铁律</string>
+    <string name="rule_1">1. 一个内核只能有一套 root：Magisk / KernelSU / APatch 不能共存</string>
+    <string name="rule_2">2. 管理器与内核必须同分支同版本协议，跨分支 = 显示「未安装 / 不支持」</string>
+    <string name="rule_3">3. Zygisk 实现只能有一套：内置引擎与外挂二选一，双开会抢注入</string>
+
+    <string name="download_and_install">下载并安装</string>
+    <string name="open_repo">仓库</string>
+    <string name="copy_command">命令</string>
+    <string name="copied">已复制</string>
+    <string name="reset_progress">重置</string>
+    <string name="soft_reboot">软重启</string>
+    <string name="reboot">重启</string>
+    <string name="installed_need_reboot">装完了。重启或软重启后模块才会挂载生效。</string>
+
+    <!-- 清单分组：必装 / 选装 -->
+    <string name="group_required">必装（%1$d 项）</string>
+    <string name="group_optional">选装（%1$d 项）</string>
+
+    <!-- 手动安装已下载的 zip -->
+    <string name="install_title">安装模块</string>
+    <string name="install_intro">选择下载好的模块 zip，App 会调用对应体系的安装命令执行，并把输出显示出来。装完记得软重启（锁 BL）或重启。</string>
+    <string name="install_pick">选择模块 zip</string>
+    <string name="install_do">执行安装</string>
+    <string name="install_softreboot">软重启</string>
+    <string name="install_reboot">重启</string>
+    <string name="install_list">列出已装模块</string>
+    <string name="install_idle">输出会显示在这里</string>
+    <string name="install_no_file">尚未选择文件</string>
+    <string name="install_pick_first">先选择一个模块 zip</string>
+    <string name="install_stage_failed">无法把文件放到 su 可读的位置，换一个目录试试</string>
+
+    <!-- 三 Tab -->
+    <string name="tab_pre">root 前必看</string>
+    <string name="tab_detect">状态检测</string>
+    <string name="tab_post">工具</string>
+
+    <!-- Tab2 状态检测（原「环境准备」改名） -->
+    <string name="sec_detect">状态检测</string>
+    <string name="detect_8e5_title">机型（8E5 判断）</string>
+    <string name="detect_8e5_yes">✅ 8E5（Snapdragon 8 Elite Gen5 / SM8850）：支持 hnubl 假回锁</string>
+    <string name="detect_8e5_no">⚠ 非 8E5 平台（当前 SoC 非 SM8850）：不建议开启 SUSFS / hnubl（仅 8E5 支持）</string>
+    <string name="detect_8e5_need_root">需要 root 才能识别机型</string>
+    <string name="detect_susfs_title">SUSFS 开关</string>
+    <string name="detect_susfs_on">⚠ SUSFS 已开启（内核隐藏模块已加载）</string>
+    <string name="detect_susfs_off">SUSFS 未开启</string>
+    <string name="detect_susfs_need_root">需要 root 才能读取 SUSFS 状态</string>
+    <string name="detect_framework_need_root">需要 root 才能读取框架组合</string>
+    <string name="detect_framework_title">框架组合</string>
+    <string name="detect_integrity_title">模块 / 管理器本体 / 反向异常</string>
+    <string name="detect_integrity_ok">✅ 未发现反向异常（框架模块 + 管理器本体）</string>
+    <string name="detect_integrity_need_root">需要 root 才能读取模块完整性</string>
+    <string name="detect_manager_app_title">框架管理器本体（App）：</string>
+    <string name="detect_conflicts_title">发现反向异常：</string>
+    <string name="detect_boot_title">上一次 / 本次启动原因</string>
+    <string name="detect_boot_changed">⚠ 本次会话期间 boot_id 已变化：发生过真重启（root 可能丢失）</string>
+    <string name="detect_boot_same">boot_id 未变化：未检测到真重启</string>
+    <string name="detect_boot_need_root">需要 root 才能读取 boot_id</string>
+
+    <!-- 启动 / 重启日志采集（按钮触发，无需 root） -->
+    <string name="sec_env_hint_merged">先确认有没有拿到 root：没有 root 也能看清单，但装不了模块。标注「需 root」的项要授权后才会显示结果。</string>
+    <string name="boot_pull_button">开始持续采集重启日志</string>
+    <string name="boot_stop_button">停止采集（点此结束）</string>
+    <string name="boot_pull_hint">点击开始：先采一轮全量，随后每秒持续采集（boot_id / uptime / dmesg / logcat…），直到手动停止或检测到手机重启。每项立即写盘（fsync），重启前已采内容不丢；文件在 Download/RB-log/。</string>
+    <string name="boot_idle">点击按钮开始持续采集（无 root 用 shell，有 root 自动切 su）；再次点击停止，手机重启会自动停止。结果存 Download/RB-log/。</string>
+    <string name="low_interference">低干扰模式（少调 su，避免影响 98260 提权）</string>
+    <string name="open_app_settings">去系统设置（后台活动 / 自启动 / 电池）›</string>
+    <string name="manual_mark">手动打点（记录 SukiSU 软重启等外部操作）›</string>
+
+    <!-- Tab3 root 后 -->
+    <string name="sec_post_branch">管理器及其分支</string>
+    <string name="sec_post_plan">生成设置项与模块清单</string>
+    <string name="post_susfs_on">已开启 SUSFS：清单已按 vector + NeoZygisk 组合生成，第一次注入前先确认放行条与注入库都在。</string>
+    <string name="post_susfs_off">SUSFS 未开启：清单按默认组合（Zygisk Next）生成。</string>
+    <string name="post_susfs_need_root">需 root 后才能确定 SUSFS 状态。</string>
+    <string name="sec_post_boot">上一次重启原因监控</string>
+    <string name="sec_post_recovery">框架功能恢复</string>
+    <string name="recovery_open">打开恢复流程 ›</string>
+    <string name="recovery_title">框架功能恢复</string>
+    <string name="sec_post_hnubl">hnubl 操作手册</string>
+
+    <!-- 框架恢复：一键自动修复 -->
+    <string name="recovery_subtitle">选择要修复的框架，一键自动执行恢复流程（无需手动复制命令）</string>
+    <string name="recovery_framework_title">选择要修复的框架</string>
+    <string name="recovery_framework_hint">只修选中的框架；另一个本次不会启动，需要时再单独选它修一次。</string>
+    <string name="recovery_framework_lsposed">LSPosed</string>
+    <string name="recovery_framework_vector">Vector</string>
+    <string name="recovery_fix_button">一键自动修复框架</string>
+    <string name="recovery_fix_confirm_button">开始修复</string>
+    <string name="recovery_fix_confirm_title">确认一键修复</string>
+    <string name="recovery_output_title">执行输出</string>
+    <string name="recovery_output_idle">输出会显示在这里</string>
+    <string name="recovery_fixing">正在执行修复…</string>
+    <string name="recovery_root_checking">正在检查 root 权限…</string>
+    <string name="recovery_root_ok">✓ 已取得 root，可以一键修复</string>
+    <string name="recovery_root_missing">⚠ 当前无 root：一键修复需要 root 权限。请先到 MagicRoot 一键提权，并在 SukiSU / 管理器里给「MagicRoot Guide」授权后再试。</string>
+    <string name="recovery_progress_running">正在获取 root 并执行修复…（请勿重复点击）</string>
+    <string name="recovery_progress_zygote">已发起 zygote 重启，App 将退出，属正常。请勿再次点击。</string>
+    <string name="recovery_no_su">未取得 root 授权（su 不可用）。请先到 MagicRoot 一键提权，并在 SukiSU / 管理器里给「MagicRoot Guide」勾选「超级用户」后再点一次。</string>
+    <string name="recovery_no_output">（无输出）如果已授权 root，请确认 MagicRoot 已提权；若脚本中途重启了 zygote，App 退出属正常，重开后到「状态检测」复测即可。</string>
+</resources>

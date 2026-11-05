@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  自适应图标前景：盾牌（root 的"守门"含义）+ 终端提示符 >_（shell 含义）。
+  所有内容都在 72dp 安全圆内（圆心 54,54，半径 36），圆角/圆形裁切都不会切到。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- 盾牌主体 -->
+    <path
+        android:pathData="M54,27 L79,36.5 L79,55.5 C79,71 68,80.5 54,85 C40,80.5 29,71 29,55.5 L29,36.5 Z"
+        android:strokeColor="#3DFFFFFF"
+        android:strokeWidth="1.2">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="29"
+                android:startY="27"
+                android:endX="79"
+                android:endY="85">
+                <item android:offset="0" android:color="#FF9ABAFF" />
+                <item android:offset="0.5" android:color="#FF6B87F5" />
+                <item android:offset="1" android:color="#FF4558C8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 内层高光，让盾牌有厚度 -->
+    <path
+        android:pathData="M54,33.5 L73.5,41 L73.5,55.2 C73.5,67 64.5,74.8 54,79 C43.5,74.8 34.5,67 34.5,55.2 L34.5,41 Z"
+        android:fillColor="#1AFFFFFF" />
+
+    <!-- 终端提示符 > -->
+    <path
+        android:pathData="M42,48.5 L50,55.5 L42,62.5"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+
+    <!-- 光标 _ -->
+    <path
+        android:pathData="M55.5,62.5 L64.5,62.5"
+        android:strokeColor="#FFEAF1FF"
+        android:strokeWidth="4.6"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+</vector>

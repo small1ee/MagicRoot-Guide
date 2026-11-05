@@ -1,0 +1,27 @@
+# Android / Gradle
+.gradle/
+.kotlin/
+build/
+app/build/
+captures/
+local.properties
+*.iml
+.idea/
+
+# 签名与密钥
+*.jks
+*.keystore
+*.p12
+
+# 构建产物
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# 系统 / 编辑器
+.DS_Store
+._*
+Thumbs.db
+*.log
+*.hprof
