@@ -121,6 +121,14 @@
     <string name="open_app_settings">去系统设置（后台活动 / 自启动 / 电池）›</string>
     <string name="manual_mark">手动打点（记录 SukiSU 软重启等外部操作）›</string>
 
+    <!-- 采集日志窗口（主界面内，固定高度独立滚动，可折叠） -->
+    <string name="log_window_title">采集日志</string>
+    <string name="log_window_title_stopped">采集日志 · 已停止</string>
+    <string name="log_window_title_running">采集日志 · 运行中</string>
+    <string name="log_toggle_expand">展开 ▾</string>
+    <string name="log_toggle_collapse">收起 ▴</string>
+
+
     <!-- Tab3 root 后 -->
     <string name="sec_post_branch">管理器及其分支</string>
     <string name="sec_post_plan">生成设置项与模块清单</string>

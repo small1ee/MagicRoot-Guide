@@ -151,4 +151,14 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <!-- 紧凑次按钮：并排两列时用，文字不变形、触摸目标仍 44dp -->
+    <style name="Widget.App.Button.Outlined.Compact" parent="Widget.App.Button.Outlined">
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
 </resources>

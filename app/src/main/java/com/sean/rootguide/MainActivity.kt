@@ -84,6 +84,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var swLowInterference: com.google.android.material.switchmaterial.SwitchMaterial
     @Volatile private var lowInterference = true
 
+    // —— 主界面采集日志窗口（固定高度独立滚动，可折叠，避免把整页撑长）——
+    private lateinit var svLog: android.widget.ScrollView
+    private lateinit var tvLogTitle: TextView
+    private lateinit var tvLogToggle: TextView
+    @Volatile private var logExpanded = false
+
     /** 最近一次检测到的设备事实；没 root 时为 null */
     private var detectedFacts: BranchDetect.Facts? = null
     /** 完整事实（含检测四项的字段），即使没 root 也尽量保留能拿到的部分 */
@@ -196,6 +202,9 @@ class MainActivity : AppCompatActivity() {
         btnRecovery = findViewById(R.id.btnRecovery)
         btnPullBootDetect = findViewById(R.id.btnPullBootDetect)
         swLowInterference = findViewById(R.id.swLowInterference)
+        svLog = findViewById(R.id.svLog)
+        tvLogTitle = findViewById(R.id.tvLogTitle)
+        tvLogToggle = findViewById(R.id.tvLogToggle)
 
         findViewById<TextView>(R.id.tvChangelog).apply {
             text = Changelog.VERSION_LABEL
@@ -289,6 +298,8 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<View>(R.id.tvOpenAppSettings).setOnClickListener { openAppSettings() }
         findViewById<View>(R.id.tvManualMark).setOnClickListener { showManualMarkDialog() }
+        // 日志窗口：默认收起，点「展开」查看；采集结束自动收起，避免把整页撑长
+        tvLogToggle.setOnClickListener { setLogExpanded(!logExpanded) }
 
         tvEnvSummary = findViewById(R.id.tvEnvSummary)
         btnEnvDetect = findViewById(R.id.btnEnvDetect)
@@ -687,6 +698,31 @@ class MainActivity : AppCompatActivity() {
         val hint = getString(R.string.boot_idle)
         tvDetectBoot.text = hint
         tvDetectBoot.setTextColor(getColor(R.color.text_secondary))
+        // 没在采集时日志窗口保持收起，避免占满页面
+        if (::tvLogTitle.isInitialized && !rebootLogRunning.get()) {
+            tvLogTitle.setText(R.string.log_window_title)
+            setLogExpanded(false)
+        }
+    }
+
+    /**
+     * 主界面「采集日志」窗口的展开 / 收起。
+     * 展开：固定 200dp 高的独立滚动区（日志再长也只在这里滚，不撑长整页）；
+     * 收起：只留一行标题栏。
+     */
+    private fun setLogExpanded(expand: Boolean) {
+        logExpanded = expand
+        svLog.visibility = if (expand) View.VISIBLE else View.GONE
+        tvLogToggle.setText(if (expand) R.string.log_toggle_collapse else R.string.log_toggle_expand)
+        // 只滚日志自己的内容，不用 fullScroll（它会请求父级聚焦，把整页也滚走）
+        if (expand) svLog.post { scrollLogToBottom() }
+    }
+
+    /** 滚到日志窗口内最底部；只作用于窗口自身，不影响外层页面位置 */
+    private fun scrollLogToBottom() {
+        if (!::svLog.isInitialized) return
+        val h = svLog.getChildAt(0)?.height ?: 0
+        svLog.scrollTo(0, maxOf(0, h - svLog.height))
     }
 
     /**
@@ -704,6 +740,9 @@ class MainActivity : AppCompatActivity() {
         if (!rebootLogRunning.compareAndSet(false, true)) return
         rebootLogStop.set(false)
         btn.text = getString(R.string.boot_stop_button)
+        // 开始采集：展开日志窗口（固定高度滚动），标题标记「运行中」
+        tvLogTitle.setText(R.string.log_window_title_running)
+        setLogExpanded(true)
         // 记录「采集中」，若被 zygote 重启/手机重启杀掉进程，下次打开可自动续采
         getSharedPreferences("rebootlog_state", MODE_PRIVATE)
             .edit().putBoolean("active", true).putBoolean("low", lowInterference).apply()
@@ -721,6 +760,9 @@ class MainActivity : AppCompatActivity() {
                 RebootLogService.stopRequested = false
                 runOnUiThread {
                     btnPullBootDetect.text = getString(R.string.boot_pull_button)
+                    // 采集结束自动收起日志窗口，只留一行标题，页面回到可用的长度
+                    tvLogTitle.setText(R.string.log_window_title_stopped)
+                    setLogExpanded(false)
                 }
             }
         }.start()
@@ -1000,12 +1042,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 向上找到所在 ScrollView 并滚到底，实时采集时始终能看到最新一项 */
+    /** 向上找到所在 ScrollView 并滚到底（只滚该 ScrollView，不请求父级聚焦，避免整页乱跳） */
     private fun scrollParentToBottom(v: View) {
         var p = v.parent
         while (p != null) {
             if (p is android.widget.ScrollView) {
-                p.fullScroll(View.FOCUS_DOWN)
+                val child = p.getChildAt(0) ?: return
+                p.scrollTo(0, maxOf(0, child.height - p.height))
                 return
             }
             p = p.parent
