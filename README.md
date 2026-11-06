@@ -1,6 +1,10 @@
 # MagicRoot Guide（RootGuide）
 
+简体中文 | [English](README.en.md)
+
 > 面向 Android Root 用户的工具箱：状态检测、模块清单与一键安装、风控环境检测、框架一键修复、重启日志持续采集。
 > 自动识别你**实际在用**的 su 管理器分支，给出「设置项 + 模块」清单，点一下自动下载并安装。
 
 纯AI手搓大杂烩app
+
+当前版本 **v1.21**（versionCode 22） · 更新日志见 [CHANGELOG.md](CHANGELOG.md) · 许可与第三方声明见 [LICENSE](LICENSE) / [NOTICE.md](NOTICE.md)

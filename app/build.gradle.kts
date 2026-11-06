@@ -19,8 +19,8 @@ android {
         applicationId = "com.sean.magicrootguide"
         minSdk = 26
         targetSdk = 35
-        versionCode = 21
-        versionName = "1.20"
+        versionCode = 22
+        versionName = "1.21"
     }
 
     compileOptions {

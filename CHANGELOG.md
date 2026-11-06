@@ -1,5 +1,24 @@
 # 更新日志
 
+## v1.21 — 2026-11-06
+
+### 主界面采集日志改为「固定高度 + 可折叠」
+- 原 `tvDetectBoot` 是 `wrap_content` 卡片，每轮 dmesg / logcat 都往里堆，页面被撑得极长，要下拉很久才能看到下面的功能。
+- 改为 `logWindow`：标题栏（`tvLogTitle` + `tvLogToggle`「展开 ▾ / 收起 ▴」）+ `svLog`（ScrollView，固定 200dp，默认 `GONE`）。日志再长只在窗口内部滚动。
+- `MainActivity`：新增 `svLog / tvLogTitle / tvLogToggle / logExpanded`、`setLogExpanded()`、`scrollLogToBottom()`；开始采集自动展开并标「运行中」，`finally` 里自动收起并标「已停止」，`renderBoot()` 在未采集时保持收起。
+- 修复：`ScrollView.fullScroll()` 会走 `requestChildFocus`，把外层页面一起滚走（展开后「收起」被顶出屏幕）。改为 `scrollTo(0, child.height - view.height)`；`scrollParentToBottom()` 同步改 `scrollTo`，实时采集时整页不再乱跳。
+
+### 风控环境检测三个按钮重排
+- 原「两个文字链接挤一行 + 第三个链接单独一行」→ 主按钮「运行风控环境检测」整行（`Widget.App.Button`），下方「完整方案 135 项」「导出风险名单」并排等分。
+- 新增样式 `Widget.App.Button.Outlined.Compact`（44dp / 12sp / 10dp 圆角）。注：`insetTop/insetBottom` 在本工程不可解析（`attr not found`），未使用。
+
+### 采集悬浮窗自动折叠
+- `RebootLogService`：展开态闲置 8 秒（`AUTO_COLLAPSE_MS`）自动折叠成细窄状态条；轻点标题条（位移 < touchSlop 且 < 400ms）切换折叠/展开，拖动则移动窗口。
+- 折叠时状态条仍刷「第 N 轮 · 已写 N 项 · root/shell」，`updateLog` 增加折叠分支只刷状态条、不滚 ScrollView。
+
+### 版本
+- v1.21（versionCode 22）。
+
 ## v1.20 — 2026-11-06
 
 ### 「风险应用」合并 + 导出名单
