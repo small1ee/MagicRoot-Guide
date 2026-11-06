@@ -77,6 +77,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvPostSusfsNote: TextView
     private lateinit var btnRecovery: View
 
+    // —— 标题行「重启选项」展开面板 ——
+    private lateinit var rebootPanel: View
+    private lateinit var btnRebootMenu: View
+    private lateinit var btnReboot: Button
+    private lateinit var btnSoftReboot: Button
+
     // —— 重启日志持续采集（开始/停止开关）——
     private val rebootLogRunning = java.util.concurrent.atomic.AtomicBoolean(false)
     private val rebootLogStop = java.util.concurrent.atomic.AtomicBoolean(false)
@@ -200,6 +206,10 @@ class MainActivity : AppCompatActivity() {
 
         tvPostSusfsNote = findViewById(R.id.tvPostSusfsNote)
         btnRecovery = findViewById(R.id.btnRecovery)
+        rebootPanel = findViewById(R.id.rebootPanel)
+        btnRebootMenu = findViewById(R.id.btnRebootMenu)
+        btnReboot = findViewById(R.id.btnReboot)
+        btnSoftReboot = findViewById(R.id.btnSoftReboot)
         btnPullBootDetect = findViewById(R.id.btnPullBootDetect)
         swLowInterference = findViewById(R.id.swLowInterference)
         svLog = findViewById(R.id.svLog)
@@ -288,6 +298,42 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.tvGuideLink).setOnClickListener {
             Links.openRef(this, Links.GUIDE_REF)
         }
+
+        // 标题行「重启选项」：点图标展开/收起同层级面板（纯 View 显隐，不弹窗、不新建 Window）
+        btnRebootMenu.setOnClickListener {
+            rebootPanel.visibility =
+                if (rebootPanel.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        }
+
+        // 软重启：零提示、点击即生效。zygote 重启会杀掉本 App，任何 UI 回显都是死代码，
+        // 故这里只起后台线程执行脚本，绝不 Toast / AlertDialog / runOnUiThread / 收面板。
+        // 末尾 echo 让 SuExec.run 的 -c 直跑 stdout 非空，避免 stdin 兜底把整条脚本再跑一遍（二次重启 zygote）。
+        btnSoftReboot.setOnClickListener {
+            val script = listOf(
+                "id | grep -q 'uid=0' || { echo 'SBH_SOFTREBOOT=no-root'; exit 1; }",
+                "echo 0 > /sys/module/bootfail/parameters/bfctl 2>/dev/null",
+                "/data/adb/ksud resetprop -n ro.sys.ping_bf_dorecovery false 2>/dev/null",
+                "for s in zygote zygote64 surfaceflinger keystore2 servicemanager hwservicemanager ueventd; do /data/adb/ksud resetprop -n init.svc_debug.no_fatal.\$s 1 2>/dev/null; done",
+                "/data/local/tmp/sbh/bin/stpclear",
+                "(sleep 1; setprop ctl.restart zygote) >/dev/null 2>&1 &",
+                "echo 'SBH_SOFTREBOOT=issued'"
+            ).joinToString("\n")
+            Thread { SuExec.run(script, 30L) }.start()
+        }
+
+        // 普通重启：保留确认弹窗，文案全部取 strings.xml（用户后续可能只改文案）
+        btnReboot.setOnClickListener {
+            rebootPanel.visibility = View.GONE
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.reboot_confirm_title))
+                .setMessage(getString(R.string.reboot_confirm_message))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(getString(R.string.reboot_confirm_positive)) { _, _ ->
+                    Thread { SuExec.run("reboot") }.start()
+                }
+                .show()
+        }
+
         findViewById<View>(R.id.btnProbe).setOnClickListener { runProbe() }
 
         // 重启日志：只在「状态检测」标签保留入口（开始 / 停止 开关，持续采集直到手动停止或重启）
@@ -346,7 +392,7 @@ class MainActivity : AppCompatActivity() {
                 Recovery.FW_VECTOR else Recovery.FW_LSPOSED
             startActivity(
                 Intent(this, RecoveryActivity::class.java)
-                    .putExtra(RecoveryActivity.EXTRA_SUSFS_ON, Prefs.getSusfsOn(this))
+                    .putExtra(RecoveryActivity.EXTRA_SUSFS_ON, detectedFacts?.susfsOn ?: Prefs.getSusfsOn(this))
                     .putExtra(RecoveryActivity.EXTRA_IS_8E5, currentFacts?.is8E5 ?: false)
                     .putExtra(RecoveryActivity.EXTRA_FRAMEWORK, defaultFw)
             )
@@ -633,7 +679,9 @@ class MainActivity : AppCompatActivity() {
         // ② SUSFS 开关
         tvDetectSusfs.text = when {
             facts == null || !hasRoot -> getString(R.string.detect_susfs_need_root)
-            facts.susfsOn -> getString(R.string.detect_susfs_on)
+            facts.susfsOn -> getString(R.string.detect_susfs_on) +
+                if (facts.susfsEvidence.isNotBlank())
+                    "\n" + getString(R.string.detect_susfs_evidence, facts.susfsEvidence) else ""
             else -> getString(R.string.detect_susfs_off)
         }
 

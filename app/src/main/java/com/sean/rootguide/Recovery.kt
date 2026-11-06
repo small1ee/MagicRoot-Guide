@@ -12,11 +12,17 @@ package com.sean.rootguide
  *  - **清残留共用**：LSPosed 与 Vector 共用 `/data/adb/lspd/lock` 单例锁。修复前把两侧 daemon、
  *    仍持有该锁 fd 的僵留进程（flock 文件删不掉，只能杀持有者）、两侧 `zygiskd64-<module>` 注入进程、
  *    `zygisk-ptrace64` monitor 残留、`/data/adb/neozygisk` 一次性清干净 —— 不只杀「对端」。
+ *    其中 `zygisk-ptrace64` 与 `/data/adb/neozygisk` 是【NeoZygisk 专属】，Zygisk Next 场景下不存在，
+ *    跳过即可、无副作用；其余清残留对两种 Zygisk 实现都适用。
+ *  - **Zygisk 实现共用启动路径**：`zygisksu/post-fs-data.sh` 与 `zygisksu/sepolicy.rule` 为
+ *    NeoZygisk / Zygisk Next【共用】。真机实测（2026-11-06）：手动补跑该脚本可拉起 Zygisk Next，
+ *    因此本修复对两种实现都生效，不再要求「必须换成 NeoZygisk」。
  *  - **启动统一**：两个框架都用 `app_process -Djava.class.path=<模块>/daemon.apk -Xnoimage-dex2oat`
  *    直拉，绕过各自 daemon 包装脚本里的 dexoptanalyzer（Android 17 ART 上会 SIGSEGV）。
  *  - **重启 zygote**：把框架注入 system_server 与各 App；该步会重启所有 App（含本 App），属正常。
  *
- * [susfsOn] 决定要不要额外跑 stpclear；[framework] 决定修复 LSPosed 还是 Vector。
+ * [susfsOn] 仅为兼容既有调用链保留（stpclear 现为无条件执行，不再受其影响）；
+ * [framework] 决定修复 LSPosed 还是 Vector。
  */
 object Recovery {
 
@@ -48,10 +54,9 @@ object Recovery {
         lines += "echo 0 > /sys/module/bootfail/parameters/bfctl 2>/dev/null"
         lines += "/data/adb/ksud resetprop -n ro.sys.ping_bf_dorecovery false 2>/dev/null"
         lines += "for s in zygote zygote64 surfaceflinger keystore2 servicemanager hwservicemanager ueventd; do /data/adb/ksud resetprop -n init.svc_debug.no_fatal.\$s 1 2>/dev/null; done"
-        if (susfsOn) {
-            lines += "# 开着 SUSFS：清 STP 判定，确认 kernel_stp 每秒检查计数归零"
-            lines += "/data/local/tmp/sbh/bin/stpclear 2>/dev/null && echo 'stpclear OK' || echo 'stpclear 不可用（无 libstp，可忽略）'"
-        }
+        lines += "# 清 STP 判定（幂等无害）：开着 SUSFS 时 hisecd 每秒 kernel_stp 扫描是整机复位主因；"
+        lines += "# SUSFS 状态可能读取不到，故无条件执行，避免漏跑"
+        lines += "/data/local/tmp/sbh/bin/stpclear 2>/dev/null && echo 'stpclear OK' || echo 'stpclear 不可用（无 libstp，可忽略）'"
         lines += "echo '闸门已关'"
         lines += ""
         // —— 目标参数：选中谁就修谁 ——
@@ -63,7 +68,7 @@ object Recovery {
         lines += ""
         // —— ③ 清残留：两个框架共用同一套 ——
         lines += "echo '== ③ 清残留（LSPosed / Vector 共用同一套）=='"
-        lines += "# 1) NeoZygisk monitor 残留"
+        lines += "# 1) NeoZygisk 专属 monitor 残留（Zygisk Next 无此进程，跳过无害）"
         lines += "for p in \$(pidof zygisk-ptrace64); do kill -9 \"\$p\" 2>/dev/null; done"
         lines += "# 2) 两侧 daemon 全结束"
         lines += "for p in \$(pidof vectord lspd); do kill -9 \"\$p\" 2>/dev/null; done"
@@ -72,12 +77,14 @@ object Recovery {
         lines += "rm -f /data/adb/lspd/lock 2>/dev/null"
         lines += "# 4) 两侧注入进程残留"
         lines += "for p in \$(pidof zygiskd64-zygisk_lsposed zygiskd64-zygisk_vector); do kill -9 \"\$p\" 2>/dev/null; done"
-        lines += "# 5) NeoZygisk 运行时目录"
+        lines += "# 5) NeoZygisk 专属运行时目录（Zygisk Next 下不存在，跳过无害）"
         lines += "rm -rf /data/adb/neozygisk 2>/dev/null"
-        lines += "echo '残留已清：两侧 daemon / 共享锁 / 注入进程 / monitor'"
+        lines += "echo '残留已清：两侧 daemon / 共享锁 / 注入进程 / 当前 Zygisk 实现残留'"
         lines += ""
         // —— ④ 启动：两个框架统一 app_process -Xnoimage-dex2oat 直拉 ——
-        lines += "echo '== ④ 拉起 monitor + 目标 daemon（统一 app_process -Xnoimage-dex2oat 直拉）=='"
+        lines += "echo '== ④ 拉起当前 Zygisk 实现 + 目标 daemon（统一 app_process -Xnoimage-dex2oat 直拉）=='"
+        // zygisksu/post-fs-data.sh + sepolicy.rule 是 NeoZygisk / Zygisk Next 共用路径；
+        // 实测手动补跑可拉起 Zygisk Next，无需为不同实现切换脚本。
         lines += "setsid sh /data/adb/modules/zygisksu/post-fs-data.sh </dev/null >/dev/null 2>&1 &"
         // 关键：必须在模块目录下启动。lspd 会按相对路径找 framework.dex / bridge；
         // CWD 不对就会报 framework.dex ENOENT、exec bridge ENOENT，最终 System server: not connected。
@@ -85,7 +92,9 @@ object Recovery {
         // 等 daemon 真正起来再重启 zygote：太早重启，system_server 来不及连上 bridge
         lines += "i=0; while [ \$i -lt 20 ] && ! pidof \"\$DAEMON\" >/dev/null 2>&1; do sleep 1; i=\$((i+1)); done"
         lines += "sleep 3"
-        lines += "echo \"monitor 进程数：\$(pidof zygisk-ptrace64 | wc -w)（应为 1）\""
+        lines += "if [ -d /data/adb/neozygisk ] || pidof zygisk-ptrace64 >/dev/null 2>&1; then ZIMPL=NeoZygisk; else ZIMPL='Zygisk Next / 其他'; fi"
+        lines += "echo \"当前 Zygisk 实现：\$ZIMPL（共用 zygisksu/post-fs-data.sh）\""
+        lines += "echo \"NeoZygisk monitor(zygisk-ptrace64) 进程数：\$(pidof zygisk-ptrace64 | wc -w)（仅 NeoZygisk 应为 1；Zygisk Next 无此进程属正常）\""
         lines += "echo \"\$NAME daemon(\$DAEMON) 进程数：\$(pidof \"\$DAEMON\" | wc -w)（应为 1）\""
         lines += "echo \"对端残留检查：lspd=\$(pidof lspd | wc -w) vectord=\$(pidof vectord | wc -w)\""
         lines += ""
@@ -105,12 +114,13 @@ object Recovery {
     /** 一键修复前的风险提示，作为确认弹窗正文。 */
     fun warning(susfsOn: Boolean, is8E5: Boolean, framework: String): String = buildString {
         val name = if (framework == FW_LSPOSED) "LSPosed" else "Vector"
-        append("将自动修复【$name】：确认 root → 关三道闸门 → 清残留 → 拉起 $name daemon 与 NeoZygisk monitor → 重启 zygote → 验证。\n\n")
-        append("· 两个框架共用同一套清残留：结束两侧 daemon、释放 /data/adb/lspd 共享锁（含旧锁 fd 持有者）、清两侧注入进程与 monitor 残留，然后只拉起 $name。\n")
+        append("将自动修复【$name】：确认 root → 关三道闸门 → 清残留 → 拉起 $name daemon 与当前 Zygisk 实现（NeoZygisk / Zygisk Next 共用 zygisksu/post-fs-data.sh）→ 重启 zygote → 验证。\n\n")
+        append("· 两个框架共用同一套清残留：结束两侧 daemon、释放 /data/adb/lspd 共享锁（含旧锁 fd 持有者）、清两侧注入进程与当前 Zygisk 实现残留，然后只拉起 $name。\n")
         append("· 另一个框架本次不会启动，需要时单独再选它修一次。\n")
+        append("· NeoZygisk 与 Zygisk Next 都可由 zygisksu/post-fs-data.sh 拉起；zygisk-ptrace64 / /data/adb/neozygisk 仅 NeoZygisk 专属，Zygisk Next 下不存在属正常。\n")
         append("· 会重启 zygote，所有 App 会退出重进（屏幕黑一下是正常的），本 App 也会被重启。\n")
         append("· 务必在开机满 10 分钟后再点（MagicOS critical window=10，窗口内重启 zygote 可能整机复位）。\n")
-        if (susfsOn) append("· 当前开着 SUSFS：会额外跑 stpclear 清 STP 判定，请在验证前确认 kernel_stp 每秒检查计数为 0。\n")
+        append("· 修复会先跑 stpclear 清 STP 判定（无条件执行）；若当前开着 SUSFS，请在验证前确认 kernel_stp 每秒检查计数为 0。\n")
         if (!is8E5) append("· 本机非 8E5（SM8850）：假回锁 / hnubl 不适用，请按本机实际调整。\n")
         append("\n是否继续？")
     }

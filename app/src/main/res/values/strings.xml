@@ -160,4 +160,11 @@
     <string name="recovery_progress_zygote">已发起 zygote 重启，App 将退出，属正常。请勿再次点击。</string>
     <string name="recovery_no_su">未取得 root 授权（su 不可用）。请先到 MagicRoot 一键提权，并在 SukiSU / 管理器里给「MagicRoot Guide」勾选「超级用户」后再点一次。</string>
     <string name="recovery_no_output">（无输出）如果已授权 root，请确认 MagicRoot 已提权；若脚本中途重启了 zygote，App 退出属正常，重开后到「状态检测」复测即可。</string>
+
+    <!-- 标题行「重启选项」展开面板 -->
+    <string name="reboot_menu_cd">重启选项</string>
+    <string name="reboot_confirm_title">确认重启？</string>
+    <string name="reboot_confirm_message">会断开当前所有 App。若你的 root 是临时 root（重启即失效），请改用「软重启」。</string>
+    <string name="reboot_confirm_positive">重启</string>
+    <string name="detect_susfs_evidence">依据：%1$s</string>
 </resources>

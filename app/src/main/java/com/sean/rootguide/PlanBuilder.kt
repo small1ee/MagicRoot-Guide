@@ -87,9 +87,11 @@ object PlanBuilder {
         // ---------------- 基础层：元模块 / Zygisk 实现 ----------------
         if (branch.needMetaModule) steps += metaStep()
         if (susfsOn) {
-            // 已开启 SUSFS：无论什么管理器，统一推荐 vector + NeoZygisk 组合。
+            // 已开启 SUSFS：优先建议 vector + NeoZygisk 组合，但不是「必须换掉 Zygisk Next」。
             // NeoZygisk 用 ptrace 直接附加运行的 zygote 注入，不需要重启 zygote 也能注入，
             // 能避开 MagicOS 的 critical window（开机 10 分钟内重启 zygote 必整机重启）。
+            // Zygisk Next 同样可用：与 NeoZygisk 共用 zygisksu/post-fs-data.sh，
+            // late-load 下手动补跑该脚本（并补齐 sepolicy.rule）即可拉起，只是也要避开 critical window。
             steps += susfsComboStep()
             steps += neoZygiskStep()
         } else {
@@ -210,24 +212,26 @@ object PlanBuilder {
 
     private fun susfsComboStep(): Step = Step(
         id = "susfs_combo",
-        title = "⚠ 已检测到 SUSFS 开启：统一采用 vector + NeoZygisk 组合",
-        desc = "开启 SUSFS 后本 App 建议改用 NeoZygisk（外挂 Zygisk 实现）+ Vector（Xposed）的组合，" +
-                "替代默认的 Zygisk Next。NeoZygisk 用 ptrace 注入，不依赖 post-fs-data，更适配临时 root / late-load。",
+        title = "⚠ 已检测到 SUSFS 开启：建议优先 vector + NeoZygisk 组合（Zygisk Next 亦可用）",
+        desc = "开启 SUSFS 后本 App 优先建议 NeoZygisk（外挂 Zygisk 实现）+ Vector（Xposed）的组合：" +
+                "NeoZygisk 用 ptrace 注入活着的 zygote，不依赖 post-fs-data，更适配临时 root / late-load，也能避开 MagicOS 的 critical window。" +
+                "这不是「必须换掉 Zygisk Next」——Zygisk Next 与之共用 zygisksu/post-fs-data.sh，late-load 下手动补跑该脚本并补齐 sepolicy.rule 同样能拉起（实测），只是重启 zygote 时要避开窗口期。",
         required = true, kind = StepKind.SETUP,
-        warn = "若当前分支自带内置 Zygisk（FinaSU / YukiSU）或已开 Magisk Zygisk，先关掉内置/自带的那套，只留 NeoZygisk，否则双开抢注入。" +
+        warn = "若当前分支自带内置 Zygisk（FinaSU / YukiSU）或已开 Magisk Zygisk，先关掉内置/自带的那套，只留一套外挂实现，否则双开抢注入。" +
+                "Zygisk 实现同时只能装一套：NeoZygisk 与 Zygisk Next 二选一，不是叠加。" +
                 "开着 SUSFS 时切勿做第一次注入，先确认放行条与注入库都在，再重启 zygote（见「框架功能恢复」）。"
     )
 
     private fun neoZygiskStep(): Step = Step(
         id = "zygisk_impl_neo",
-        title = "Zygisk 实现：NeoZygisk（必装，开启 SUSFS 时推荐）",
-        desc = "ptrace 直接附加运行的 zygote 注入，不依赖 post-fs-data 拉起 daemon，适配临时 root / late-load。与内置引擎二选一。",
+        title = "Zygisk 实现：NeoZygisk（开启 SUSFS 时优先推荐，可与 Zygisk Next 二选一）",
+        desc = "ptrace 直接附加运行的 zygote 注入，不依赖 post-fs-data 拉起 daemon，适配临时 root / late-load。与内置引擎二选一；与 Zygisk Next 也是二选一，二者共用 zygisksu/post-fs-data.sh。",
         required = true, kind = StepKind.MODULE,
         url = ModuleCatalog.NEOZYGISK.repoUrl,
         module = ModuleCatalog.NEOZYGISK,
         cmd = "su -c \"ksud module install /data/local/tmp/neozygisk.zip\"",
         verify = "装一个 Zygisk 模块能正常启停即通",
-        warn = "若当前分支自带内置 Zygisk（FinaSU / YukiSU）或已开 Magisk Zygisk，先关掉内置/自带的那套，只留 NeoZygisk"
+        warn = "若当前分支自带内置 Zygisk（FinaSU / YukiSU）或已开 Magisk Zygisk，先关掉内置/自带的那套，只留一套外挂实现；已装 Zygisk Next 且工作正常的话，可以不换"
     )
 
     private fun vectorStep(): Step = Step(

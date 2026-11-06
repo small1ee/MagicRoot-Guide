@@ -17,9 +17,8 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/app_name"
             android:textColor="@color/text_primary"
             android:textSize="26sp"
@@ -37,6 +36,50 @@
             android:text="@string/view_link"
             android:textColor="@color/accent"
             android:textSize="14sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnRebootMenu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_power"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/reboot_menu_cd"
+            android:scaleType="fitCenter"
+            android:padding="8dp" />
+    </LinearLayout>
+
+    <!-- 标题行图标展开：重启 / 软重启。同层级 View 显隐，不新建 Window、不抢焦点 -->
+    <LinearLayout
+        android:id="@+id/rebootPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnReboot"
+            style="@style/Widget.App.Button.Outlined"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/reboot"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnSoftReboot"
+            style="@style/Widget.App.Button.Outlined"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/soft_reboot"
+            android:textAllCaps="false" />
     </LinearLayout>
 
     <TextView
@@ -594,11 +637,13 @@
             <TextView
                 android:id="@+id/tvDetectIntegrity"
                 style="@style/Card" />
+            </LinearLayout>
 
-            <!-- 上一次 / 本次启动原因（持续采集，无需 root） -->
-            <TextView
-                style="@style/SectionSubTitle"
-                android:text="@string/detect_boot_title" />
+            <!-- 上一次 / 本次启动原因（独立板块，持续采集，无需 root） -->
+            <LinearLayout style="@style/SectionBlock">
+                <TextView
+                    style="@style/SectionTitle"
+                    android:text="@string/detect_boot_title" />
             <TextView
                 style="@style/SectionHint"
                 android:text="@string/boot_pull_hint" />

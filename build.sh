@@ -20,26 +20,31 @@ FIRST="$(printf '%s' "$VARIANT" | cut -c1 | tr '[:lower:]' '[:upper:]')"
 REST="$(printf '%s' "$VARIANT" | cut -c2-)"
 VARIANT_CAP="$FIRST$REST"
 
-# ---- 工具链定位：本机历史上有过两套安装位置，逐个探测，允许任何一种存在 ----
+# ---- 工具链定位：本机历史上有过三套安装位置，逐个探测，跳过不存在的候选 ----
 pick_first() {
   local found
   for cand in "$@"; do
     found="$(eval echo "$cand")"
-    [[ -n "$found" ]] && printf '%s\n' "$found" && return 0
+    # 必须真的存在才采用；否则继续试下一个候选
+    [[ -n "$found" && -e "$found" ]] && printf '%s\n' "$found" && return 0
   done
   return 1
 }
 
 JDK_HOME="$(pick_first \
+  '$HOME/tools/jdk-17.0.21+9/Contents/Home' \
   '$HOME/.local/jdk/zulu17.56.15-ca-jdk17.0.14-macosx_x64/zulu-17.jdk/Contents/Home' \
   '$HOME/.local/jdk/zulu17.56.15-ca-jdk17.0.14-macosx_x64' \
   '$HOME/Library/Java/JavaVirtualMachines/zulu17.54.21-ca-jdk17.0.13-macosx_x64' || true)"
 
 GRADLE_BIN="$(pick_first \
+  '$HOME/tools/gradle-8.9/bin/gradle' \
+  '$HOME/.gradle/wrapper/dists/gradle-8.9-bin/90cnw93cvbtalezasaz0blq0a/gradle-8.9/bin/gradle' \
   '$HOME/.local/gradle/gradle-8.9/bin/gradle' \
   '$HOME/.local/toolchain/gradle-8.9/bin/gradle' || true)"
 
 ANDROID_SDK="$(pick_first \
+  '$HOME/tools/android-sdk' \
   '$HOME/.local/android-sdk' \
   '$HOME/Library/Android/sdk' || true)"
 

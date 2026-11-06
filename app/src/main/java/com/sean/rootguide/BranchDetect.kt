@@ -36,6 +36,7 @@ object BranchDetect {
         // —— 状态检测四项（Tab2）——
         val is8E5: Boolean = false,       // 是否为荣耀 8E5 平台（hnubl 假回锁仅此平台支持）
         val susfsOn: Boolean = false,     // SUSFS 是否已开启
+        val susfsEvidence: String = "",   // SUSFS 命中依据（诊断用，如「/proc/susfs_* ×9」）
         val bootId: String = "",          // 当前 boot_id，用于判断「是否发生过真重启」
         val bootReason: String = "",      // 最近一次启动原因（ro.boot.bootreason / sys.boot.reason）
         // —— 模块完整性 / 反向异常（Tab2 第 4 项）——
@@ -166,6 +167,8 @@ object BranchDetect {
         // SUSFS 是否开着：目录 / 接口文件 / 已装模块名 任一命中即视为开着
         "p susfsdir \"\$([ -d /data/adb/susfs ] && echo yes || echo no)\"",
         "p susfsproc \"\$([ -e /proc/susfs ] && echo yes || echo no)\"",
+        "p susfslkm \"\$(if [ -d /sys/module/susfs_guard_lkm ] || ls -d /proc/susfs* >/dev/null 2>&1; then echo yes; else echo no; fi)\"",
+        "p susfsprocglob \"\$(ls -d /proc/susfs* 2>/dev/null | wc -l | tr -d ' ')\"",
         // 上一次/本次启动原因与 boot_id：boot_id 变化 = 发生过真重启
         "p bootid \"\$(cat /proc/sys/kernel/random/boot_id 2>/dev/null)\"",
         "p bootreason \"\$(getprop sys.boot.reason 2>/dev/null);\$(getprop ro.boot.bootreason 2>/dev/null)\"",
@@ -189,8 +192,17 @@ object BranchDetect {
         val is8E5 = (v["socmodel"] ?: "").contains("SM8850", ignoreCase = true) ||
                 (v["device"] ?: "").contains("8e5", ignoreCase = true) ||
                 (v["model"] ?: "").contains("8e5", ignoreCase = true)
-        val susfsOn = v["susfsdir"] == "yes" || v["susfsproc"] == "yes" ||
-                modules.any { it.contains("susfs", ignoreCase = true) }
+        val procHits = v["susfsprocglob"]?.trim()?.toIntOrNull() ?: 0
+        val susfsHits = mutableListOf<String>()
+        if (v["susfsdir"] == "yes") susfsHits += "/data/adb/susfs"
+        if (v["susfsproc"] == "yes") susfsHits += "/proc/susfs"
+        if (v["susfslkm"] == "yes") susfsHits += "/sys/module/susfs_guard_lkm 或 /proc/susfs_*"
+        if (procHits > 0) susfsHits += "/proc/susfs_* ×$procHits"
+        if (v["folksusfs"] == "yes") susfsHits += "/data/adb/ksu/folksu-susfs"
+        val susfsModules = modules.filter { it.contains("susfs", ignoreCase = true) }
+        if (susfsModules.isNotEmpty()) susfsHits += "模块 " + susfsModules.joinToString("、")
+        val susfsEvidence = susfsHits.joinToString(" / ")
+        val susfsOn = susfsHits.isNotEmpty()
         val bootId = v["bootid"] ?: ""
         val bootReason = (v["bootreason"] ?: "")
             .split(";").map { it.trim() }.filter { it.isNotBlank() }.joinToString(" ; ")
@@ -224,6 +236,7 @@ object BranchDetect {
             managerPackages = installedManagers,
             is8E5 = is8E5,
             susfsOn = susfsOn,
+            susfsEvidence = susfsEvidence,
             bootId = bootId,
             bootReason = bootReason,
             disabledModules = disabledModules,
